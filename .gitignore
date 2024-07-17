@@ -1,0 +1,19 @@
+# MacOS
+.DS_Store
+
+# Terraform Specific
+**/.terraform/*
+ignore.*.tfvars
+
+# IDE specific
+.idea/
+.vscode/
+
+# Project Specific
+DEVNOTES
+tmp/
+
+# Python Specific
+.venv/
+__pycache__/
+*.pyc
