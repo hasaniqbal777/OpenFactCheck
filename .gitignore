@@ -17,3 +17,9 @@ tmp/
 .venv/
 __pycache__/
 *.pyc
+
+# Logs and Output
+*.log
+passage.json
+questions.txt
+verification_error.txt

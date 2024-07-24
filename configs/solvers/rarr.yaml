@@ -1,0 +1,12 @@
+rarr_model: gpt-3.5-turbo-instruct
+rarr_retriever:
+  input_name: claims
+  output_name: claims_with_evidences
+  max_search_results_per_query: 5
+  max_sentences_per_passage: 4
+  sliding_distance: 1
+  max_passages_per_search_result: 1
+rarr_verifier:
+  input_name: claims_with_evidences
+  output_name: label
+  max_evidences_per_question: 1

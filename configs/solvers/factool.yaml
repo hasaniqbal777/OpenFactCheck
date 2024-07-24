@@ -1,0 +1,11 @@
+facttool_model: gpt-3.5-turbo
+factool_claimprocessor:
+  input_name: response
+  output_name: claims
+factool_retriever:
+  input_name: claims
+  output_name: claims_with_evidences
+  snippet_cnt: 10
+factool_verifier:
+  input_name: claims_with_evidences
+  output_name: label

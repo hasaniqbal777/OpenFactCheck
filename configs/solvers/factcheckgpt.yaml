@@ -1,0 +1,24 @@
+factcheckgpt_model: gpt-3.5-turbo
+factcheckgpt_claimprocessor:
+  input_name: response
+  output_name: claims
+  mode: independent_sentences
+  rule_based_method: spacy
+  spacy_model: en_core_web_sm
+factcheckgpt_retriever:
+  input_name: claims
+  output_name: claims_with_evidences
+  n_questions: 1
+  question_gen_round: 1
+  qgen_temp: 0.7
+  search_timeout: 10
+  max_search_results_per_query: 2
+  max_passages_per_search_result_to_return: 3
+  sentences_per_passage: 5
+  max_passages_per_question: 5
+  max_aggregated_evidences: 5
+factcheckgpt_verifier:
+  input_name: claims_with_evidences
+  output_name: label
+  stance_model: gpt-3.5-turbo
+  verify_retries: 3
