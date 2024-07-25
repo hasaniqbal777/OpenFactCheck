@@ -25,6 +25,9 @@ jobs:
               sed -i 's/<!--/---/g; s/-->/---/g' $READMEFILE
           fi
 
+          git config --global user.email "34169605+hasaniqbal777@users.noreply.github.com"
+          git config --global user.name "Hasan Iqbal"
+
           git add $READMEFILE
           git commit -m "Uncommented HuggingFace Spaces Configuration"
       - name: Push to Hugging Face
