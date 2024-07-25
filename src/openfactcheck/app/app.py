@@ -1,37 +1,29 @@
-import gradio as gr
+import streamlit as st
+from streamlit_option_menu import option_menu
 
-def greet(name):
-    """
-    Returns a greeting to the user provided name.
+class App:
+    def __init__(self):
+        pass
 
-    Parameters:
-    name (str): The name of the person to greet.
+    def run(self):
 
-    Returns:
-    str: A greeting string.
-    """
-    return f"Hello, {name}! Welcome to Gradio."
+        # Set up Dashboard
+        st.set_page_config(page_title="OpenFactCheck Dashboard", 
+                        page_icon=":bar_chart:", 
+                        layout="wide")
+                        
+        # Title
+        st.markdown("<h1 style='text-align: center;'>OpenFactCheck Dashboard</h1>", unsafe_allow_html=True)
+        st.markdown("<h5 style='text-align: center;'>An Open-source Factuality Evaluation Demo for LLMs</h3>", unsafe_allow_html=True)
 
-js_func = """
-function refresh() {
-    const url = new URL(window.location);
+        # Selection Menu
+        selected = option_menu(None, ["Evaluate LLM Response", "Evaluate LLM", "Evaluate FactChecker", "Leaderboards", "About"], 
+            icons=['card-checklist', 'check-square', "check2-all", "trophy", "info-circle"],
+            menu_icon="cast", 
+            default_index=0, 
+            orientation="horizontal"
+        )
 
-    if (url.searchParams.get('__theme') !== 'light') {
-        url.searchParams.set('__theme', 'light');
-        window.location.href = url.href;
-    }
-}
-"""
-
-with gr.Blocks(js=js_func) as demo:
-    gr.Interface(
-    fn=greet,  # Function to call
-    inputs=gr.Textbox(placeholder="Enter your name here...", label="Name"),  # Input component
-    outputs="text",  # Output component type
-    title="Hello World App",  # Title of the app
-    description="A simple Gradio app that greets you."  # Description of the app
-    )
-
-# Run the interface
 if __name__ == "__main__":
-    demo.launch()
+    app = App()
+    app.run()

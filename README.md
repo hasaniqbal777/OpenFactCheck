@@ -3,7 +3,7 @@ title: OpenFactCheck
 emoji: ✅
 colorFrom: green
 colorTo: purple
-sdk: gradio
+sdk: streamlit
 app_file: src/openfactcheck/app/app.py
 pinned: false
 -->

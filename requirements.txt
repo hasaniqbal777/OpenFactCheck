@@ -2,6 +2,7 @@ aiofiles
 aiohttp
 aiosignal
 alabaster
+altair
 annotated-types
 anyio
 arrow
@@ -15,6 +16,7 @@ bibtexparser
 blinker
 blis
 bs4
+cachetools
 catalogue
 certifi
 charset-normalizer
@@ -44,6 +46,8 @@ fonttools
 free-proxy
 frozenlist
 fsspec
+gitdb
+GitPython
 gradio
 gradio_client
 h11
@@ -58,6 +62,8 @@ itsdangerous
 Jinja2
 joblib
 jsonlines
+jsonschema
+jsonschema-specifications
 kiwisolver
 langcodes
 language_data
@@ -81,10 +87,12 @@ packaging
 pandas
 pillow
 preshed
+protobuf
 pyarrow
 pyarrow-hotfix
 pydantic
 pydantic_core
+pydeck
 pydub
 Pygments
 pyparsing
@@ -94,9 +102,11 @@ python-dotenv
 python-multipart
 pytz
 PyYAML
+referencing
 regex
 requests
 rich
+rpds-py
 ruff
 safetensors
 scholarly
@@ -108,6 +118,7 @@ sentence-transformers
 shellingham
 six
 smart-open
+smmap
 sniffio
 snowballstemmer
 sortedcontainers
@@ -126,14 +137,20 @@ sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
 srsly
 starlette
+streamlit
+streamlit-option-menu
 sympy
+tenacity
 thinc
 threadpoolctl
 tokenizers
+toml
 tomlkit
+toolz
 torch
 torchaudio
 torchvision
+tornado
 tqdm
 transformers
 trio
