@@ -9,7 +9,7 @@ jobs:
   huggingface_deploy:
     name: Deploy to Hugging Face
     runs-on: ubuntu-latest
-    #if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
+    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
