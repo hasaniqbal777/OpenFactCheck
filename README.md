@@ -1,12 +1,12 @@
-<!--
+---
 title: OpenFactCheck
 emoji: ✅
-colorFrom: yellow
-colorTo: orange
+colorFrom: green
+colorTo: purple
 sdk: gradio
 app_file: src/openfactcheck/app/app.py
-pinned: true
--->
+pinned: false
+---
 
 <p align="center">
   <img alt="OpenFactCheck Logo" src="assets/splash.png" height="120" />
