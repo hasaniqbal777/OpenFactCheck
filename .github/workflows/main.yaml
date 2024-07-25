@@ -1,0 +1,21 @@
+name: CI/CD
+
+on:
+  push:
+    tags: ["v[0-9].[0-9]+.[0-9]+"]
+    branches: ["*"]
+
+jobs:
+  huggingface_deploy:
+    name: Deploy to Hugging Face
+    runs-on: ubuntu-latest
+    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+      - name: Push to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: git push https://hasaniqbal777:$HF_TOKEN@huggingface.co/spaces/hasaniqbal777/OpenFactCheck main
