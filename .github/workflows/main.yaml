@@ -9,28 +9,27 @@ jobs:
   huggingface_deploy:
     name: Deploy to Hugging Face
     runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
+    #if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out code
+        uses: actions/checkout@v3
         with:
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
-          lfs: true
-      - name: Enable HuggingFace Spaces Config
+      
+      - name: Setup Git Config
         run: |
-          READMEFILE="README.md"
-
-          if [[ "$OSTYPE" == "darwin"* ]]; then
-              sed -i '' 's/<!--/---/g; s/-->/---/g' $READMEFILE
-          else
-              sed -i 's/<!--/---/g; s/-->/---/g' $READMEFILE
-          fi
-
           git config --global user.email "34169605+hasaniqbal777@users.noreply.github.com"
           git config --global user.name "Hasan Iqbal"
 
+      - name: Enable HuggingFace Spaces Config
+        run: |
+          READMEFILE="README.md"
+          sed -i 's/<!--/---/g; s/-->/---/g' $READMEFILE
           git add $READMEFILE
-          git commit -m "Uncommented HuggingFace Spaces Configuration"
+          git commit -m "Uncommented HuggingFace Spaces Configuration" || echo "No changes to commit"
+        
       - name: Push to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://hasaniqbal777:$HF_TOKEN@huggingface.co/spaces/hasaniqbal777/OpenFactCheck main --force
+        run: git push https://hasaniqbal777:$HF_TOKEN@huggingface.co/spaces/hasaniqbal777/OpenFactCheck --force
