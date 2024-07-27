@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openfactcheck"
+version = "0.0.1"
+authors = [
+    {name = "Hasan Iqbal", email = "hasan.iqbal@mbzuai.ac.ae"},
+    {name = "Yuxia Wang", email = "yuxia.wang@mbzuai.ac.ae"},
+]
+description = "An Open-source Factuality Evaluation Demo for LLMs"
+readme = "README.md"
+keywords=["NLP", "deep learning", "transformer", "pytorch", "factuality evaluation"]
+requires-python = ">=3.11"
+dynamic = ["dependencies"]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/hasaniqbal777/openfactcheck"
+"Bug Tracker" = "https://github.com/hasaniqbal777/openfactcheck/issues"
+"Repository" = "https://github.com/hasaniqbal777/openfactcheck"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["pre-requirements.txt", "requirements.txt"]}
+
+[tool.setuptools.package-data]
+openfactcheck = [
+  "templates/solver_configs/*.yaml",
+  "templates/configs/*.json"
+]
+
