@@ -12,7 +12,7 @@ authors = [
 description = "An Open-source Factuality Evaluation Demo for LLMs"
 readme = "README.md"
 keywords=["NLP", "deep learning", "transformer", "pytorch", "factuality evaluation"]
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dynamic = ["dependencies"]
 
 classifiers = [
@@ -23,6 +23,7 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
