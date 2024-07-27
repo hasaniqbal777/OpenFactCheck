@@ -20,9 +20,3 @@ if __name__ == "__main__":
     args = parse_args()
 
     ofc = OpenFactCheck(OpenFactCheckConfig(args.config_path))
-
-    #result = ofc("Pakistan is a country in Asia")
-
-    #print(result)
-
-    

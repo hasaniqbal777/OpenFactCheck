@@ -18,6 +18,9 @@ configs/dev*.json
 .venv/
 __pycache__/
 *.pyc
+build/
+dist/
+*.egg-info/
 
 # Logs and Output
 *.log
