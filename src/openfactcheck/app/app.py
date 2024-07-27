@@ -60,4 +60,4 @@ if __name__ == "__main__":
     args = parse_args()
 
     app = App()
-    app.run(args.config_path)
+    app.run("configs/production.json")

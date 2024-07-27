@@ -24,3 +24,4 @@ __pycache__/
 passage.json
 questions.txt
 verification_error.txt
+error_output.txt
