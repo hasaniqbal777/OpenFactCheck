@@ -17,7 +17,7 @@ from .prompts import rarr_prompts
 class RARRQuestionGenerator(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)
-        self.model = self.global_config.get("model", "text-davinci-003")
+        self.model = self.global_config.get("model", "gpt-3.5-turbo-instruct")
         self.temperature_qgen = args.get("temperature_qgen", 0.7)
         self.num_rounds_qgen = args.get("num_rounds_qgen", 3)
 

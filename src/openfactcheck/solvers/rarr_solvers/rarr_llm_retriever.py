@@ -13,7 +13,7 @@ from .prompts.hallucination_prompts import EVIDENCE_HALLUCINATION
 class LLMRetriever(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)
-        self.model = self.global_config.get("model", "text-davinci-003")
+        self.model = self.global_config.get("model", "gpt-3.5-turbo-instruct")
 
     def __call__(self, state: FactCheckerState, *args, **kwargs):
         claims = state.get(self.input_name)

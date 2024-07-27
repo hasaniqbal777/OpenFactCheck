@@ -10,7 +10,7 @@ from .rarr_utils import search
 class RARRRetriever(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)
-        self.model = self.global_config.get("rarr_model", "text-davinci-003")
+        self.model = self.global_config.get("rarr_model", "gpt-3.5-turbo-instruct")
         self.temperature_qgen = args.get("temperature_qgen", 0.7)
         self.num_rounds_qgen = args.get("num_rounds_qgen", 3)
         self.max_search_results_per_query = args.get("max_search_results_per_query", 5)

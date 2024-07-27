@@ -34,7 +34,7 @@ def chatgpt(user_input):
 
 def davinci(prompt):
     # Set up the model and prompt
-    model_engine = "text-davinci-003"
+    model_engine = "gpt-3.5-turbo-instruct"
 
     # Generate a response
     completion = client.completions.create(

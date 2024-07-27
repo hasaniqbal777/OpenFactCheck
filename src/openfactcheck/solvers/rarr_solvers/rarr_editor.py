@@ -14,8 +14,8 @@ import Levenshtein
 class RARREditor(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)
-        self.model = self.global_config.get("model", "text-davinci-003")
-        # self.model = args.get("model", "text-davinci-003")
+        self.model = self.global_config.get("model", "gpt-3.5-turbo-instruct")
+        # self.model = args.get("model", "gpt-3.5-turbo-instruct")
         self.max_evidences_per_question = args.get("max_evidences_per_question", 1)
         self.max_edit_ratio = args.get("max_edit_ratio", 100)
         self.output_claim_only = args.get("output_claim_only", False)

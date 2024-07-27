@@ -14,7 +14,7 @@ class RARRAgreementGate(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)
         self.max_evidences_per_question = args.get("max_evidences_per_question", 1)
-        self.model = self.global_config.get("model", "text-davinci-003")
+        self.model = self.global_config.get("model", "gpt-3.5-turbo-instruct")
 
     def __call__(self, state: FactCheckerState, *args, **kwargs):
         claims = state.get(self.input_name)
