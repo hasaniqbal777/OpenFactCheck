@@ -34,11 +34,12 @@ classifiers = [
 "Repository" = "https://github.com/hasaniqbal777/openfactcheck"
 
 [tool.setuptools.dynamic]
-dependencies = {file = ["pre-requirements.txt", "requirements.txt"]}
+dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools.package-data]
 openfactcheck = [
   "templates/solver_configs/*.yaml",
-  "templates/configs/*.json"
+  "templates/configs/*.json",
+  "solvers/**/*.yaml"
 ]
 
