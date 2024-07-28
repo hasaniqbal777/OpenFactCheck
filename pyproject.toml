@@ -40,6 +40,5 @@ dependencies = {file = ["requirements.txt"]}
 openfactcheck = [
   "templates/solver_configs/*.yaml",
   "templates/configs/*.json",
-  "solvers/**/*.yaml"
 ]
 

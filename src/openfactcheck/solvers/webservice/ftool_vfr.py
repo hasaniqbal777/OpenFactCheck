@@ -4,11 +4,7 @@ import yaml
 from openfactcheck.core.state import FactCheckerState
 from openfactcheck.core.solver import StandardTaskSolver, Solver
 from .factool_utils.chat_api import OpenAIChat
-
-from importlib import resources as pkg_resources
-from . import factool_utils
-
-prompt_path = pkg_resources.files(factool_utils) / "prompts.yaml"
+from .factool_utils.prompt import VERIFICATION_PROMPT
 
 @Solver.register("factool_verifier", "claims_with_evidences", "label")
 class FactoolVerifier(StandardTaskSolver):
@@ -16,8 +12,7 @@ class FactoolVerifier(StandardTaskSolver):
         super().__init__(args)
         self.gpt_model = self.global_config.get("factool_gpt_model", "gpt-3.5-turbo")
         self.gpt = OpenAIChat(self.gpt_model)
-        with prompt_path.open("r") as f:
-            self.verification_prompt = yaml.load(f, yaml.FullLoader)["verification"]
+        self.verification_prompt = VERIFICATION_PROMPT
 
     def __call__(self, state: FactCheckerState, *args, **kwargs):
         claims_with_evidences = state.get(self.input_name)
