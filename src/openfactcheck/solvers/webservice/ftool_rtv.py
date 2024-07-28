@@ -3,9 +3,13 @@ import yaml
 
 from openfactcheck.core.state import FactCheckerState
 from openfactcheck.core.solver import StandardTaskSolver, Solver
-from .facttool_utils.chat_api import OpenAIChat
-from .facttool_utils.search_api import GoogleSerperAPIWrapper
+from .factool_utils.chat_api import OpenAIChat
+from .factool_utils.search_api import GoogleSerperAPIWrapper
 
+from importlib import resources as pkg_resources
+from . import factool_utils
+
+prompt_path = pkg_resources.files(factool_utils) / "prompts.yaml"
 
 @Solver.register("factool_retriever", "claims", "claims_with_evidences")
 class FactoolRetriever(StandardTaskSolver):
@@ -14,16 +18,8 @@ class FactoolRetriever(StandardTaskSolver):
         self.gpt_model = self.global_config.get("factool_gpt_model", "gpt-3.5-turbo")
         self.snippet_cnt = args.get("snippet_cnt", 10)
         self.gpt = OpenAIChat(self.gpt_model)
-        self.query_prompt = yaml.load(
-            open(
-                os.path.join(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "facttool_utils/prompts.yaml",
-                ),
-                "r",
-            ),
-            yaml.FullLoader,
-        )["query_generation"]
+        with prompt_path.open("r") as f:
+            self.query_prompt = yaml.load(f, yaml.FullLoader)["query_generation"]
         self.search_engine = GoogleSerperAPIWrapper(snippet_cnt=self.snippet_cnt)
 
     def __call__(self, state: FactCheckerState, *args, **kwargs):
