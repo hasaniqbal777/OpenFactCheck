@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from openfactcheck.core.base import OpenFactCheck
-from openfactcheck.app.utils import style_metric_cards
+from openfactcheck.app.utils import metric_card
 
 # Create a function to check a LLM response
 def evaluate_response(ofc: OpenFactCheck):
@@ -38,6 +38,7 @@ def evaluate_response(ofc: OpenFactCheck):
 
     # Button to check factuality
     if st.button("Check Factuality"):
+
         with st.status("Checking factuality...", expanded=True) as status:
             # Configure the pipeline
             st.write("Configuring pipeline...")
@@ -90,8 +91,8 @@ def evaluate_response(ofc: OpenFactCheck):
                         formatted_text = "#### Detected Claims\n" + "\n".join(f"{i}. {extract_text(claim)}" for i, claim in enumerate(detected_claims, start=1)) + "\n"
 
                         with col2:
-                            st.metric(label="Detected Claims", value=len(detected_claims))
-                            style_metric_cards(background_color="#F0F0F0", border_color="#F0F0F0", border_radius_px=0)
+                            with st.container():
+                                metric_card(label="Detected Claims", value=len(detected_claims))
 
                         # Yield each word with a space and simulate typing by sleeping
                         for word in formatted_text.split(" "):
@@ -113,8 +114,8 @@ def evaluate_response(ofc: OpenFactCheck):
                         formatted_text = "#### Retrieved Evidences\n" + "\n".join(f"{i}. {evidence}" for i, evidence in enumerate(evidences, start=1))
 
                         with col2:
-                            st.metric(label="Retrieved Evidences", value=len(evidences))
-                            style_metric_cards(background_color="#F0F0F0", border_color="#F0F0F0", border_radius_px=0)
+                            with st.container():
+                                metric_card(label="Retrieved Evidences", value=len(evidences))
 
                         # Yield each word with a space and simulate typing by sleeping
                         for word in formatted_text.split(" "):
@@ -140,15 +141,8 @@ def evaluate_response(ofc: OpenFactCheck):
             if final_response is not None:
                 overall_factuality = final_response.get("label", "Unknown")
                 with col2:
-                    if overall_factuality == True:
-                        st.metric(label="Overall Factuality", value="True")
-                        style_metric_cards(background_color="#D4EDDA", border_color="#D4EDDA", border_radius_px=0, border_left_color="#28A745")
-                    elif overall_factuality == False:
-                        st.metric(label="Overall Factuality", value="False")
-                        style_metric_cards(background_color="#F8D7DA", border_color="#F8D7DA", border_radius_px=0, border_left_color="#DC3545")
-
-    # Button to reset
-    if st.session_state.response is not None:
-        if st.button("Reset"):
-            st.session_state.response = None
-            st.rerun()
+                    with st.container():
+                        if overall_factuality == True:
+                            metric_card(label="Overall Factuality", value="True", background_color="#D4EDDA", border_left_color="#28A745")
+                        elif overall_factuality == False:
+                            metric_card(label="Overall Factuality", value="False", background_color="#F8D7DA", border_left_color="#DC3545")
