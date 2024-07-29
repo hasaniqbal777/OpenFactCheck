@@ -102,10 +102,15 @@ echo
 
 # Modify the VERSION file
 printf "$VERSION" > ./VERSION
+bump2version patch --new-version $VERSION --allow-dirty --verbose 
+
+# Commit and tag the release
 git add ./VERSION
+git add ./bumpversion.cfg
+git add ./pyproject.toml
+git add ./src/openfactcheck/__init__.py
 git commit -m "🚀 $MESSAGE"
 git tag $VERSION
 git push origin $BRANCH
 git push origin $VERSION
-
 gh release create $VERSION --generate-notes
