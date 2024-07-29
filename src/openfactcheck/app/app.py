@@ -19,16 +19,20 @@ def parse_args():
     # Parse arguments from command line
     args = parser.parse_args()
     return args
-
+    
 class App:
-    def __init__(self):
+    def __init__(self, config_path: str = "config.json"):
+        @st.cache_resource(show_spinner=False)
+        def init(config_path: str = "config.json"):
+            # Initialize OpenFactCheck
+            config = OpenFactCheckConfig(config_path)
+            ofc = OpenFactCheck(config)
+            return ofc
+        
+        self.ofc = init(config_path)
         pass
 
-    def run(self, config_path: str = "config.json"):
-        # Initialize OpenFactCheck
-        config = OpenFactCheckConfig(config_path)
-        ofc = OpenFactCheck(config)
-
+    def run(self):
         # Set up Dashboard
         st.set_page_config(page_title="OpenFactCheck Dashboard", 
                         page_icon=":bar_chart:", 
@@ -53,10 +57,11 @@ class App:
             orientation="horizontal"
         )
 
+        st.info("Please provide OpenAI API Key, Serper API Key and Azure Search Key in the sidebar to evaluate LLM response.")
+
         # Load the selected page
         if selected == "Evaluate LLM Response":
-            st.info("Please provide OpenAI API Key, Serper API Key and Azure Search Key in the sidebar to evaluate LLM response.")
-            evaluate_response(ofc)
+            evaluate_response(self.ofc)
         # elif selected == "Evaluate LLM":
         #     evaluate_llm()
         # elif selected == "Evaluate FactChecker":
@@ -70,5 +75,5 @@ class App:
 if __name__ == "__main__":
     args = parse_args()
 
-    app = App()
-    app.run(args.config_path)
+    app = App(args.config_path)
+    app.run()
