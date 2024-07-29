@@ -9,12 +9,14 @@ authors = [
     {name = "Hasan Iqbal", email = "hasan.iqbal@mbzuai.ac.ae"},
     {name = "Yuxia Wang", email = "yuxia.wang@mbzuai.ac.ae"},
 ]
+maintainers = [
+    {name = "Hasan Iqbal", email = "hasan.iqbal@mbzuai.ac.ae"},
+]
 description = "An Open-source Factuality Evaluation Demo for LLMs"
 readme = "README.md"
 keywords=["NLP", "deep learning", "transformer", "pytorch", "factuality evaluation"]
 requires-python = ">=3.10"
-dynamic = ["dependencies"]
-
+license = {file = "LICENSE"}
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",

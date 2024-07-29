@@ -1,2 +1,4 @@
-from . import templates
-from . import solvers
+from . import *
+
+# Version of the openfactcheck package
+__version__ = '0.0.15'

@@ -4,7 +4,6 @@ en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_
 evaluate
 factool @ git+https://github.com/hasaniqbal777/factool
 nltk
-openfactcheck @ git+https://github.com/hasaniqbal777/openfactcheck
 sentence-transformers
 spacy
 streamlit
