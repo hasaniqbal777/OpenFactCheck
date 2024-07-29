@@ -1,1 +1,2 @@
-openfactcheck @ git+https://github.com/hasaniqbal777/openfactcheck
+# This file is used to install the library in Hugging Face Spaces before running the pipeline
+openfactcheck==0.0.17

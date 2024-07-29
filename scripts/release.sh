@@ -32,6 +32,7 @@ confirmation()
 }
 
 VERSION=$1
+VERSION_BUMP=${VERSION:1}
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # Require valid format for version
@@ -102,12 +103,13 @@ echo
 
 # Modify the VERSION file
 printf "$VERSION" > ./VERSION
-bump2version patch --new-version $VERSION --allow-dirty --verbose 
+bump2version patch --new-version $VERSION_BUMP --allow-dirty --verbose 
 
 # Commit and tag the release
 git add ./VERSION
-git add ./bumpversion.cfg
+git add ./.bumpversion.cfg
 git add ./pyproject.toml
+git add ./pre-requirements.txt
 git add ./src/openfactcheck/__init__.py
 git commit -m "🚀 $MESSAGE"
 git tag $VERSION
