@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "openfactcheck"
-version = "0.0.17"
+version = "0.0.18"
 authors = [
     {name = "Hasan Iqbal", email = "hasan.iqbal@mbzuai.ac.ae"},
     {name = "Yuxia Wang", email = "yuxia.wang@mbzuai.ac.ae"},
