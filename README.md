@@ -10,7 +10,6 @@ pinned: false
 
 <p align="center">
   <img alt="OpenFactCheck Logo" src="https://raw.githubusercontent.com/hasaniqbal777/OpenFactCheck/main/assets/splash.png" height="120" />
-  <h3 align="center" style="color:SlateBlue;">OpenFactCheck</h3>
   <p align="center">An Open-source Factuality Evaluation Demo for LLMs</p>
 </p>
 
