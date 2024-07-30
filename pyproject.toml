@@ -42,5 +42,8 @@ dependencies = {file = ["requirements.txt"]}
 openfactcheck = [
   "templates/solver_configs/*.yaml",
   "templates/configs/*.json",
+  "templates/factchecker/*.jsonl",
+  "templates/factchecker/*.csv",
+  "templates/factchecker/**/*.jsonl",
 ]
 
