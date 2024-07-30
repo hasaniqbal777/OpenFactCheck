@@ -68,6 +68,9 @@ jobs:
           sed -i 's/<!--/---/g; s/-->/---/g' $READMEFILE
           git add $READMEFILE
           git commit -m "Uncommented HuggingFace Spaces Configuration" || echo "No changes to commit"
+
+      - name: Wait for 10 seconds
+        run: sleep 10
         
       - name: Push to Hugging Face
         env:
