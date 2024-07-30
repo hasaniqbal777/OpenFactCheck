@@ -5,6 +5,7 @@ from streamlit_option_menu import option_menu
 from openfactcheck.core.base import OpenFactCheck, OpenFactCheckConfig
 from openfactcheck.app.sidebar import sidebar
 from openfactcheck.app.evaluate_response import evaluate_response
+from openfactcheck.app.evaluate_factchecker import evaluate_factchecker
 from openfactcheck.app.utils import footer
 
 def parse_args():
@@ -64,8 +65,8 @@ class App:
             evaluate_response(self.ofc)
         # elif selected == "Evaluate LLM":
         #     evaluate_llm()
-        # elif selected == "Evaluate FactChecker":
-        #     evaluate_factchecker()
+        elif selected == "Evaluate FactChecker":
+            evaluate_factchecker()
         # elif selected == "Leaderboards":
         #     leaderboards()
         # else:

@@ -21,13 +21,11 @@ def evaluate_response(ofc: OpenFactCheck):
     """
     This function creates a Streamlit app to evaluate the factuality of a LLM response.
     """
-    if 'response' not in st.session_state:
-        st.session_state.response = None
 
     # Initialize the solvers
-    claimprocessors = ofc.list_claimprocessors()
-    retrievers = ofc.list_retrievers()
-    verifiers = ofc.list_verifiers()
+    st.session_state.claimprocessors = ofc.list_claimprocessors()
+    st.session_state.retrievers = ofc.list_retrievers()
+    st.session_state.verifiers = ofc.list_verifiers()
 
     st.write("This is where you can check factuality of a LLM response.")
 
@@ -37,34 +35,45 @@ def evaluate_response(ofc: OpenFactCheck):
     # Dropdown in three columns
     col1, col2, col3 = st.columns(3)
     with col1:
-        claimprocessor = st.selectbox("Select Claim Processor", list(claimprocessors))
+        if "claimprocessor" not in st.session_state:
+            st.session_state.claimprocessor = st.selectbox("Select Claim Processor", list(st.session_state.claimprocessors))
+        else:
+            st.session_state.claimprocessor = st.selectbox("Select Claim Processor", list(st.session_state.claimprocessors), index=list(st.session_state.claimprocessors).index(st.session_state.claimprocessor))
     with col2:
-        retriever = st.selectbox("Select Retriever", list(retrievers))
+        if "retriever" not in st.session_state:
+            st.session_state.retriever = st.selectbox("Select Retriever", list(st.session_state.retrievers))
+        else:
+            st.session_state.retriever = st.selectbox("Select Retriever", list(st.session_state.retrievers), index=list(st.session_state.retrievers).index(st.session_state.retriever))
     with col3:
-        verifier = st.selectbox("Select Verifier", list(verifiers))
+        if "verifier" not in st.session_state:
+            st.session_state.verifier = st.selectbox("Select Verifier", list(st.session_state.verifiers))
+        else:
+            st.session_state.verifier = st.selectbox("Select Verifier", list(st.session_state.verifiers), index=list(st.session_state.verifiers).index(st.session_state.verifier))
 
     # Input
-    input_text = {"text": st.text_area("Enter LLM response here", "This is a sample LLM response.")}
+    if "input_text" not in st.session_state:
+        st.session_state.input_text = {"text": st.text_area("Enter LLM response here", "This is a sample LLM response.")}
+    else:
+        st.session_state.input_text = {"text": st.text_area("Enter LLM response here", st.session_state.input_text["text"])}
 
     # Button to check factuality
     if st.button("Check Factuality"):
-
         with st.status("Checking factuality...", expanded=True) as status:
             # Configure the pipeline
             st.write("Configuring pipeline...")
-            ofc.init_pipeline_manually([claimprocessor, retriever, verifier])
+            ofc.init_pipeline_manually([st.session_state.claimprocessor, st.session_state.retriever, st.session_state.verifier])
             st.write("Pipeline configured...")
 
             # Evaluate the response
             st.write("Evaluating response...")
 
-            response = ofc(input_text, stream=True)
+            response = ofc(st.session_state.input_text, stream=True)
             st.write("Response evaluated...")
 
             status.update(label="Factuality checked...", state="complete", expanded=False)
 
         # Display pipeline configuration
-        pipeline_str = "&nbsp;&nbsp;&nbsp;┈➤&nbsp;&nbsp;&nbsp;".join([claimprocessor, retriever, verifier])
+        pipeline_str = "&nbsp;&nbsp;&nbsp;┈➤&nbsp;&nbsp;&nbsp;".join([st.session_state.claimprocessor, st.session_state.retriever, st.session_state.verifier])
         st.info(f"""**Pipeline**:&nbsp;&nbsp;&nbsp; \n{pipeline_str}""")
 
         # Store the final response in the session state
