@@ -18,7 +18,7 @@ pinned: false
 <p align="center">
 <a href="https://github.com/hasaniqbal777/OpenFactCheck/actions/workflows/release-patch.yaml">
     <img src="https://img.shields.io/github/actions/workflow/status/hasaniqbal777/openfactcheck/release-patch.yaml?label=release-patch
-    " alt="Release">
+    " alt="Release Patch">
 </a>
 <a href="https://github.com/hasaniqbal777/OpenFactCheck/actions/workflows/release.yaml">
     <img src="https://img.shields.io/github/actions/workflow/status/hasaniqbal777/openfactcheck/release.yaml?label=release

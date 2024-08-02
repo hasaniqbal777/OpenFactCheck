@@ -93,7 +93,7 @@ def evaluate_llm(ofc: OpenFactCheck):
     st.write("Please provide the following information to be included in the leaderboard.")
 
     # Create text inputs to enter the user information
-    st.session_state.id = uuid.uuid4().hex
+    st.session_state.id = llm_evaluator.run_id
     st.text_input("First Name", key="input_first_name", on_change=update_first_name)
     st.text_input("Last Name", key="input_last_name", on_change=update_last_name)
     st.text_input("Email", key="input_email", on_change=update_email)

@@ -57,7 +57,7 @@ class ResponseEvaluator:
         """
 
         # Check if sample_name is provided in kwargs else generate a random one
-        sample_name = kwargs.get("sample_name", str(uuid.uuid4().hex[:6]))
+        sample_name = kwargs.get("sample_name", str(uuid.uuid4()))
 
         # Initialize the state
         solver_output = FactCheckerState(question=question, response=response)
@@ -111,7 +111,7 @@ class ResponseEvaluator:
 
         def evaluate_response():
             # Check if sample_name is provided in kwargs else generate a random one
-            sample_name = kwargs.get("sample_name", str(uuid.uuid4().hex[:6]))
+            sample_name = kwargs.get("sample_name", str(uuid.uuid4()))
 
             # Initialize the state
             solver_output = FactCheckerState(question=question, response=response)

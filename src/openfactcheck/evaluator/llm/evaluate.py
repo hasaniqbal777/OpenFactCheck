@@ -1,5 +1,6 @@
 import os
 import json
+import uuid
 import pandas as pd
 from importlib import resources as pkg_resources
 
@@ -80,7 +81,7 @@ class LLMEvaluator(SnowballingEvaluator, SelfAwareEvaluator, FreshQAEvaluator, F
 
         # Set the attributes
         self.model_name = None
-        self.run_id = None
+        self.run_id = str(uuid.uuid4().hex)
         self.input_path = None
         self.dataset_path = None
         self.output_path = None
@@ -258,18 +259,17 @@ class LLMEvaluator(SnowballingEvaluator, SelfAwareEvaluator, FreshQAEvaluator, F
 
         # Set the attributes
         self.model_name = model_name
-        self.run_id = "123"
         self.input_path = input_path
         self.output_path = output_path
         self.dataset_path = dataset_path
         self.datasets = datasets
-
+        
         # Check if the output path is provided (if not, use the default template)
         if self.output_path == "":
             self.output_path = default_output_path
 
         # Check if the output path exists (if not, create it)
-        if not os.path.exists(self.output_path):
+        if not os.path.exists(f"{self.output_path}/{self.run_id}"):
             os.makedirs(f"{self.output_path}/{self.run_id}")
         
         # Check if the questions path is provided (if not, use the default template)
