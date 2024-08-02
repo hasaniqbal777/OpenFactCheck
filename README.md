@@ -16,9 +16,15 @@ pinned: false
 ---
 
 <p align="center">
-<a href="https://github.com/hasaniqbal777/OpenFactCheck/actions/workflows/main.yaml">
-    <img src="https://img.shields.io/github/actions/workflow/status/hasaniqbal777/openfactcheck/main.yaml" alt="Build and Test">
+<a href="https://github.com/hasaniqbal777/OpenFactCheck/actions/workflows/release-patch.yaml">
+    <img src="https://img.shields.io/github/actions/workflow/status/hasaniqbal777/openfactcheck/release-patch.yaml?label=release-patch
+    " alt="Release">
 </a>
+<a href="https://github.com/hasaniqbal777/OpenFactCheck/actions/workflows/release.yaml">
+    <img src="https://img.shields.io/github/actions/workflow/status/hasaniqbal777/openfactcheck/release.yaml?label=release
+    " alt="Release">
+</a>
+<br>
 <a href="https://opensource.org/licenses/Apache-2.0">
     <img src="https://img.shields.io/github/license/hasaniqbal777/openfactcheck" alt="License: Apache-2.0">
 </a>
