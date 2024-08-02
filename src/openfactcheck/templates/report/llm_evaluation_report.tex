@@ -1,0 +1,84 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{booktabs} % For formal tables
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{fancyhdr} % For header and footer
+\usepackage{lipsum} % For generating dummy text
+\usepackage{times} % Times New Roman font
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{OpenFactCheck}
+\lhead{Factuality Evaluation Report}
+\rfoot{Page \thepage}
+
+\title{Factuality Evaluation Report for {{model_name}}}
+\author{OpenFactCheck}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty} % Removes header and footer on the title page
+\newpage
+
+\setcounter{page}{1} % Start the page numbering
+
+\section{Results}
+\subsection{Snowballing Dataset}
+\subsubsection{Performance Metrics}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{snowballing_barplot.pdf}
+    \caption{Bar plot showing the accuracy of different models on the Snowballing Dataset.}
+\end{figure}
+
+\subsubsection{Confusion Matrix}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{snowballing_cm.pdf}
+    \caption{Confusion matrix showing detailed accuracy metrics.}
+\end{figure}
+
+\newpage
+
+\subsection{SelfAware Dataset}
+\subsubsection{Performance Metrics}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{selfaware_barplot.pdf}
+    \caption{Bar plot showing the metrics of different models on the SelfAware Dataset.}
+\end{figure}
+
+\subsubsection{Confusion Matrix}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{selfaware_cm.pdf}
+    \caption{Confusion matrix showing detailed accuracy metrics.}
+\end{figure}
+
+\newpage
+
+\subsection{FreshQA Dataset}
+\subsubsection{Performance Metrics}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{freshqa_piechart.pdf}
+    \caption{Pie chart showing the metrics of different models on the FreshQA Dataset.}
+\end{figure}
+
+\newpage
+
+\section{Free-Text Datasets}
+\subsection{Performance Metrics}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{freetext_barplot.pdf}
+    \caption{Bar plot showing the metrics of different models on the Free-Text Datasets (Factool-QA, FELM-WK, FactcheckGPT-Bench, Factscore-Bio etc.).}
+\end{figure}
+
+\end{document}

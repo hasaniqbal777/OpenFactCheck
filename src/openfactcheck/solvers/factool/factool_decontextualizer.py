@@ -1,38 +1,21 @@
-from core import register_solver, StandardTaskSolver, FactCheckerState
-import asyncio
-import nest_asyncio
-from factool import Factool
-from .ftool_utils.chat_api import OpenAIChat
-import yaml
 import os
-from typing import List
+import yaml
 
+from .factool_utils.chat_api import OpenAIChat
+from .factool_utils.prompt import CLAIM_EXTRACTION_PROMPT
+from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck.core.state import FactCheckerState
 
-##
-#
-# Factool Decontextualizer
-#
-# Notes:
-#   - This solver is used to extract claims from a response.
-#   - The response should be a string.
-#
-##
-@register_solver("factool_decontextualizer", "response", "claims")
+@Solver.register("factool_decontextualizer", "response", "claims")
 class FactoolDecontextualizer(StandardTaskSolver):
+    """
+    A solver to extract claims from a response.
+    """
     def __init__(self, args):
         super().__init__(args)
-        self.gpt_model = self.global_config.get("llm_in_use", "gpt-3.5-turbo")
+        self.gpt_model = self.global_config.get("llm_in_use", "gpt-4o")
         self.gpt = OpenAIChat(self.gpt_model)
-        self.claim_prompt = yaml.load(
-            open(
-                os.path.join(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "ftool_utils/prompts.yaml",
-                ),
-                "r",
-            ),
-            yaml.FullLoader,
-        )["claim_extraction"]
+        self.claim_prompt = CLAIM_EXTRACTION_PROMPT
 
     def __call__(self, state: FactCheckerState, *args, **kwargs):
         response = state.get(self.input_name)
@@ -55,4 +38,4 @@ class FactoolDecontextualizer(StandardTaskSolver):
             ]
             for response in responses
         ]
-        return self.gpt.run(messages_list, List)
+        return self.gpt.run(messages_list, list)

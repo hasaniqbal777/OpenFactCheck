@@ -22,6 +22,9 @@ def evaluate_response(ofc: OpenFactCheck):
     This function creates a Streamlit app to evaluate the factuality of a LLM response.
     """
 
+    # Initialize the response_evaluator
+    response_evaluator = ofc.ResponseEvaluator
+
     # Initialize the solvers
     st.session_state.claimprocessors = ofc.list_claimprocessors()
     st.session_state.retrievers = ofc.list_retrievers()
@@ -67,7 +70,7 @@ def evaluate_response(ofc: OpenFactCheck):
             # Evaluate the response
             st.write("Evaluating response...")
 
-            response = ofc(st.session_state.input_text, stream=True)
+            response = response_evaluator.evaluate_streaming(st.session_state.input_text)
             st.write("Response evaluated...")
 
             status.update(label="Factuality checked...", state="complete", expanded=False)
@@ -148,23 +151,33 @@ def evaluate_response(ofc: OpenFactCheck):
                             claims=0
                             false_claims = 0
                             true_claims = 0
+                            controversial_claims = 0
+                            unverified_claims = 0
                             for i, detail in enumerate(details):
-                                if detail.get("factuality", None) is not None:
+                                # Get factuality information
+                                factuality = str(detail.get("factuality", None))
+                                if factuality is not None:
                                     claim=detail.get("claim", "")
-                                    if detail.get("factuality", None) == -1:
+                                    if factuality == "-1" or factuality == "False":
                                         detail_text += f'##### :red[{str(i+1) + ". " + extract_text(claim)}]'
                                         detail_text += "\n"
                                         claims += 1
                                         false_claims += 1
-                                    elif detail.get("factuality", None) == 1:
+                                    elif factuality == "1" or factuality == "True":
                                         detail_text += f'##### :green[{str(i+1) + ". " + extract_text(claim)}]'
                                         detail_text += "\n"
                                         claims += 1
                                         true_claims += 1
-                                    else:
-                                        detail_text += f'##### :yellow[{str(i+1) + ". " + extract_text(claim)}]'
+                                    elif factuality == "0":
+                                        detail_text += f'##### :orange[{str(i+1) + ". " + extract_text(claim)}]'
                                         detail_text += "\n"
                                         claims += 1
+                                        controversial_claims += 1
+                                    else:
+                                        detail_text += f'##### :purple[{str(i+1) + ". " + extract_text(claim)}]'
+                                        detail_text += "\n"
+                                        claims += 1
+                                        unverified_claims += 1
                                 else:
                                     st.error("Factuality not found in the verifier output.")
 
@@ -194,7 +207,7 @@ def evaluate_response(ofc: OpenFactCheck):
                                         
                         # Generate formatted text with the overall factuality in Markdown format
                         formatted_text = "### Factuality Detail\n"
-                        formatted_text += "Factuality of each claim is color-coded (red:[red means false], green:[green means true], yellow:[yellow means unknown]) as follows:\n"
+                        formatted_text += "Factuality of each claim is color-coded (:red[red means false], :green[green means true], :orange[orange means controversial], :violet[violet means unverified]).\n"
                         formatted_text += f"{detail_text}\n"
                         formatted_text += "\n"
 
@@ -202,6 +215,8 @@ def evaluate_response(ofc: OpenFactCheck):
                         with col2:
                             metric_card(label="Supported Claims", value=true_claims, background_color="#D1ECF1", border_left_color="#17A2B8")
                             metric_card(label="Conflicted Claims", value=false_claims, background_color="#D1ECF1", border_left_color="#17A2B8")
+                            metric_card(label="Controversial Claims", value=controversial_claims, background_color="#D1ECF1", border_left_color="#17A2B8")
+                            metric_card(label="Unverified Claims", value=unverified_claims, background_color="#D1ECF1", border_left_color="#17A2B8")
                         
                         # Get overall factuality (label)
                         overall_factuality = output_text.get("label", "Unknown")

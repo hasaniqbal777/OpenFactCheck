@@ -1,42 +1,28 @@
-from core import register_solver, StandardTaskSolver, FactCheckerState
-from typing import List, Dict, Any
 import json
-from .ftool_utils.chat_api import OpenAIChat
-from .ftool_utils.search_api import GoogleSerperAPIWrapper
-import yaml
-import os
+from typing import Any
 
-##
-#
-# Factool Evidence Retriever
-#
-# Notes:
-#   - This solver is used to retrieve evidences (online content + its sources) for a list of claims.
-#   - The claims should be a list of strings.
-#   - The evidences are saved in a JSON file.
-#
-##
-@register_solver("factool_evidence_retriever", "claims", "evidences")
+from .factool_utils.chat_api import OpenAIChat
+from .factool_utils.search_api import GoogleSerperAPIWrapper
+from .factool_utils.prompt import QUERY_GENERATION_PROMPT
+
+from openfactcheck.core.state import FactCheckerState
+from openfactcheck.core.solver import StandardTaskSolver, Solver
+
+@Solver.register("factool_evidence_retriever", "claims", "evidences")
 class FactoolEvidenceRetriever(StandardTaskSolver):
+    """
+    A solver to retrieve evidences for a list of evidence. (online content + its sources) for a list of claims.
+    """
     def __init__(self, args):
         super().__init__(args)
-        self.gpt_model = self.global_config.get("llm_in_use", "gpt-4")
+        self.gpt_model = self.global_config.get("llm_in_use", "gpt-4o")
         self.gpt = OpenAIChat(self.gpt_model)
+        
         self.path_save_evidence = args.get("path_save_evidence", "evidence.json")
-        # self.path_save_evidence = args["path_save_evidence"] if "path_save_evidence" in args else "evidence.json"
         self.queries = None
         self.search_outputs_for_claims = None
 
-        self.query_prompt = yaml.load(
-            open(
-                os.path.join(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "ftool_utils/prompts.yaml",
-                ),
-                "r",
-            ),
-            yaml.FullLoader,
-        )["query_generation"]
+        self.query_prompt = QUERY_GENERATION_PROMPT
 
         self.search_engine = GoogleSerperAPIWrapper(snippet_cnt=10)
         
@@ -52,9 +38,9 @@ class FactoolEvidenceRetriever(StandardTaskSolver):
         search_outputs_for_claims = self.search_engine.run(queries)
         
         
-        evidences: Dict[str, Dict[str, Any]] = {}
+        evidences: dict[str, dict[str, Any]] = {}
         for i, claim in enumerate(claims):
-            evidence_list: List[dict] = []
+            evidence_list: list[dict] = []
             for j, search_outputs_for_claim in enumerate(
                 search_outputs_for_claims[i]
             ):
@@ -81,8 +67,6 @@ class FactoolEvidenceRetriever(StandardTaskSolver):
         with open(self.path_save_evidence, "w") as outfile:
             outfile.write(json_object)
 
-        # print(evidences)
-
         state.set(self.output_name, evidences)
         return True, state
 
@@ -97,4 +81,4 @@ class FactoolEvidenceRetriever(StandardTaskSolver):
             ]
             for claim in claims
         ]
-        return self.gpt.run(messages_list, List)
+        return self.gpt.run(messages_list, list)

@@ -1,6 +1,3 @@
-import os
-import yaml
-
 from openfactcheck.core.state import FactCheckerState
 from openfactcheck.core.solver import StandardTaskSolver, Solver
 

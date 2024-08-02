@@ -1,38 +1,23 @@
-from core.fact_check_state import FactCheckerState
-from core.task_solver import StandardTaskSolver
-from core import register_solver
-from .ftool_utils.chat_api import OpenAIChat
-import yaml
-import os
 import json
 
+from .factool_utils.chat_api import OpenAIChat
+from .factool_utils.prompt import VERIFICATION_PROMPT
 
-##
-#
-# Factool Claim Examiner
-#
-# Notes:
-#   - This solver is used to examine the claims in a response.
-#
-##
-@register_solver("factool_claim_examiner", "evidences", "claim_info")
+from openfactcheck.core.state import FactCheckerState
+from openfactcheck.core.solver import StandardTaskSolver, Solver
+
+@Solver.register("factool_claim_examiner", "evidences", "claim_info")
 class FactoolClaimExaminer(StandardTaskSolver):
+    """
+    A solver to examine the claims in a response.
+    """
     def __init__(self, args):
         super().__init__(args)
-        self.gpt_model = self.global_config.get("llm_in_use", "gpt-4")
+        self.model_name = self.global_config.get("model_name", "gpt-4o")
         self.path_save_stance = args.get("path_save_stance", "evidence_stance.json")
         self.verifications = None
-        self.gpt = OpenAIChat(self.gpt_model)
-        self.verification_prompt = yaml.load(
-            open(
-                os.path.join(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "ftool_utils/prompts.yaml",
-                ),
-                "r",
-            ),
-            yaml.FullLoader,
-        )["verification"]
+        self.gpt = OpenAIChat(self.model_name)
+        self.verification_prompt = VERIFICATION_PROMPT
 
     # async def coro (self, factool_instance, claims_in_response, evidences):
     #    self.verifications = await factool_instance.pipelines["kbqa_online"]._verification(claims_in_response, evidences)
@@ -72,36 +57,28 @@ class FactoolClaimExaminer(StandardTaskSolver):
             # print(f'Verification for claim {key}: {verifications[index]}\n')
             # print(f'Verification for claim {key}: Type = {type(verifications[index])}\n')
             stance = ""
-            if (
-                    type(verifications[index]) == None
-                    or verifications[index] == "None"
-            ):
+            index = 0  # Ensure the 'index' variable is defined somewhere appropriate in your context
+
+            # Check if verifications at the current index is None or 'None'
+            if verifications[index] is None or verifications[index] == "None":
                 stance = claims_in_response[index]["claim"]
             else:
-                stance = (
-                    ""
-                    if (
-                            verifications[index]["error"] == "None"
-                            or len(verifications[index]["error"]) == 0
-                    )
-                    else (verifications[index]["error"] + " ")
-                )
-                stance += (
-                    ""
-                    if (
-                            verifications[index]["reasoning"] == "None"
-                            or len(verifications[index]["reasoning"]) == 0
-                    )
-                    else verifications[index]["reasoning"]
-                )
-                stance += (
-                    claims_in_response[index]["claim"]
-                    if (
-                            verifications[index]["correction"] == "None"
-                            or len(verifications[index]["correction"]) == 0
-                    )
-                    else (" " + verifications[index]["correction"])
-                )
+                # Initialize stance with error or empty string
+                error = verifications[index].get("error", "")
+                if error and error != "None":
+                    stance = error + " "
+                
+                # Append reasoning if it exists and is not 'None'
+                reasoning = verifications[index].get("reasoning", "")
+                if reasoning and reasoning != "None":
+                    stance += reasoning
+                
+                # Append claim or correction if available
+                correction = verifications[index].get("correction", "")
+                if correction and correction != "None":
+                    stance += " " + correction
+                else:
+                    stance += claims_in_response[index]["claim"]
             claim_info[key]["stances"] = [stance]
             for j in range(len(claim_info[key]["evidence_list"])):
                 claim_info[key]["evidence_list"][j]["stance"] = stance
@@ -114,8 +91,6 @@ class FactoolClaimExaminer(StandardTaskSolver):
         with open(self.path_save_stance, "w") as outfile:
             outfile.write(json_object)
 
-        # print(claim_info)
-
         state.set(self.output_name, claim_info)
         return True, state
 
@@ -123,8 +98,10 @@ class FactoolClaimExaminer(StandardTaskSolver):
         messages_list = [
             [
                 {"role": "system", "content": self.verification_prompt['system']},
-                {"role": "user", "content": self.verification_prompt['user'].format(claim=claim, evidence=str(
-                    [e[1] for e in evidence]))},
+                {"role": "user", "content": self.verification_prompt['user'].format(
+                    claim=claim,
+                    evidence=str([e[1] for e in evidence if isinstance(e, (list, tuple)) and len(e) > 1])
+                )}
             ]
             for claim, evidence in claims_with_evidences.items()
         ]

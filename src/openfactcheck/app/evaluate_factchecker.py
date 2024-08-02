@@ -8,17 +8,21 @@ import matplotlib.pyplot as plt
 from importlib import resources as pkg_resources
 
 from openfactcheck.app.utils import metric_card
-from openfactcheck.factchecker.evaluate import FactCheckerEvaluator
+from openfactcheck.core.base import OpenFactCheck
 from openfactcheck.templates import factchecker as templates_dir
 
 # Import solver configuration templates
 claims_templates_path = str(pkg_resources.files(templates_dir) / "claims.jsonl")
 documents_templates_path = str(pkg_resources.files(templates_dir) / "documents.jsonl")
 
-def evaluate_factchecker():
+def evaluate_factchecker(ofc: OpenFactCheck):
     """
     This function creates a Streamlit app to evaluate a Factchecker.
     """
+    
+    # Initialize the FactChecker Evaluator
+    fc_evaluator = ofc.FactCheckerEvaluator
+
     st.write("This is where you can evaluate the factuality of a FactChecker.")
 
     # Display the instructions
@@ -111,46 +115,24 @@ def evaluate_factchecker():
 
         # Display a waiting message
         with st.status("Evaluating factuality of the FactChecker...", expanded=True) as status:
-            # Run the evaluation script
-            fce = FactCheckerEvaluator(input=uploaded_data, eval_type="claims")
-            result = fce()
+            result = fc_evaluator.evaluate(input_path=uploaded_data, eval_type="claims")
             status.update(label="FactChecker evaluated...", state="complete", expanded=False)
 
         # Display the evaluation report
         st.write("### Evaluation report:")
-
-        """
-        {
-    "True_as_positive": {
-        "accuracy": 0.486,
-        "precision": 0.71,
-        "recall": 0.478,
-        "F1": 0.571
-    },
-    "False_as_positive": {
-        "accuracy": 0.486,
-        "precision": 0.277,
-        "recall": 0.506,
-        "F1": 0.358
-    },
-    "total_time": 14430.0,
-    "total_cost": 144.3,
-    "num_samples": 1443
-}
-        """
         
         col1, col2 = st.columns(2, gap="large")
         with col1:
             # Create the heatmap
             classes = ['True', 'False']
             fig = plt.figure()
-            sns.heatmap(fce.confusion_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=classes, yticklabels=classes)
+            sns.heatmap(fc_evaluator.confusion_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=classes, yticklabels=classes)
             plt.ylabel('Actual Class')
             plt.xlabel('Predicted Class')
             st.pyplot(fig)
         with col2:
             # Display the metrics
-            accuracy = fce.results["True_as_positive"]["accuracy"]
+            accuracy = fc_evaluator.results["True_as_positive"]["accuracy"]
             if accuracy > 0.75 and accuracy <= 1:
                 # Green background
                 metric_card(label="Accuracy", value=f"{accuracy:.2%}", background_color="#D4EDDA", border_left_color="#28A745")
@@ -163,13 +145,13 @@ def evaluate_factchecker():
                 
             sub_col1, sub_col2, sub_col3 = st.columns(3)
             with sub_col1:  
-                metric_card(label="Total Time", value=fce.results["total_time"])
+                metric_card(label="Total Time", value=fc_evaluator.results["total_time"])
             with sub_col2:
-                metric_card(label="Total Cost", value=fce.results["total_cost"])
+                metric_card(label="Total Cost", value=fc_evaluator.results["total_cost"])
             with sub_col3:
-                metric_card(label="Number of Samples", value=fce.results["num_samples"])
+                metric_card(label="Number of Samples", value=fc_evaluator.results["num_samples"])
 
-            st.text("Report:\n" + fce.classification_report)
+            st.text("Report:\n" + fc_evaluator.classification_report)
         
 
     

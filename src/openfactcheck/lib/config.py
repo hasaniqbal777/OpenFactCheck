@@ -1,6 +1,9 @@
 import os
 import json
 import yaml
+import openai
+import asyncio
+import logging
 import datasets
 import transformers
 from pathlib import Path
@@ -21,7 +24,8 @@ with solver_config_templates_path as solver_config_templates_dir_path:
 # Import default solvers
 # TODO: Currently, only webservice solvers are supported as default solvers
 solver_templates_paths = [
-    str(pkg_resources.files(solver_templates_dir) / 'webservice')
+    str(pkg_resources.files(solver_templates_dir) / 'webservice'),
+    str(pkg_resources.files(solver_templates_dir) / 'factool')
 ]
 
 class OpenFactCheckConfig:
@@ -70,9 +74,6 @@ class OpenFactCheckConfig:
         Secrets = namedtuple("Secrets", ["openai_api_key", 
                                          "serper_api_key", 
                                          "azure_search_key"])
-        Pipeline = namedtuple("Pipeline", ["claimprocessor",
-                                           "retriever",
-                                           "verifier"])
         
         # Define Attributes
         self.config = None
@@ -113,10 +114,10 @@ class OpenFactCheckConfig:
 
             # Initialize template solver paths along with the user-defined solver paths
             if 'solver_paths' in self.config:
-                self.solver_paths = solver_templates_paths + self.config['solver_paths']
+                self.solver_paths = {"default": solver_templates_paths, "user_defined": self.config['solver_paths']}
             else:
                 self.logger.warning("No solver paths found in the configuration file. Using default solver paths only.")
-                self.solver_paths = solver_templates_paths
+                self.solver_paths = {"default": solver_templates_paths, "user_defined": []}
 
             # Initialize Output Path
             if 'output_path' in self.config:
@@ -129,9 +130,7 @@ class OpenFactCheckConfig:
             
             # Initialize Pipeline config
             if 'pipeline' in self.config:
-                self.pipeline = Pipeline(claimprocessor=self.config['pipeline']['claimprocessor'],
-                                            retriever=self.config['pipeline']['retriever'],
-                                            verifier=self.config['pipeline']['verifier'])
+                self.pipeline = self.config['pipeline']
             else:
                 if self.solver_configs:
                     solvers = list(self.solver_configs.keys())
@@ -147,7 +146,7 @@ class OpenFactCheckConfig:
                             verifier = solver
                         if claimprocessor and retriever and verifier:
                             break
-                    self.pipeline = Pipeline(claimprocessor=claimprocessor, retriever=retriever, verifier=verifier)
+                    self.pipeline = [claimprocessor, retriever, verifier]
                     self.logger.warning(f"No pipeline found in the configuration file. Using first solver as default pipeline. ClaimProcessor: {claimprocessor}, Retriever: {retriever}, Verifier: {verifier}")
 
             # Initialize Secrets config
@@ -182,6 +181,8 @@ class OpenFactCheckConfig:
             # Disable Transformers and Datasets logging
             transformers.logging.set_verbosity_error()
             datasets.logging.set_verbosity_error()
+            logging.basicConfig(level=logging.ERROR)
+            logging.getLogger("asyncio").setLevel(logging.CRITICAL)
 
         except FileNotFoundError:
             self.logger.error(f"Config file not found: {self.filename}")

@@ -1,16 +1,18 @@
 import os 
 import sys
-import uuid
-import tqdm
 import json
-import traceback
 from pathlib import Path
-from typing import Callable
+from typing import TYPE_CHECKING
 
 from openfactcheck.lib.logger import logger
+from openfactcheck.core.state import FactCheckerState
 from openfactcheck.lib.config import OpenFactCheckConfig
 from openfactcheck.core.solver import SOLVER_REGISTRY, Solver
-from openfactcheck.core.state import FactCheckerState
+
+if TYPE_CHECKING:
+    from openfactcheck.evaluator.llm.evaluate import LLMEvaluator
+    from openfactcheck.evaluator.response.evaluate import ResponseEvaluator
+    from openfactcheck.evaluator.factchecker.evaluate import FactCheckerEvaluator
 
 class OpenFactCheck:
     """
@@ -96,24 +98,50 @@ class OpenFactCheck:
         self.logger.info(f"Loaded solvers: {list(self.list_solvers().keys())}")
 
         # Initialize the pipeline
-        self.pipeline = self.init_pipeline()
-
-        self.logger.info("-------------- OpenFactCheck Initialized ----------------")
-        self.logger.info("Pipeline:")
-        for idx, (name, (solver, iname, oname)) in enumerate(self.pipeline.items()):
-            self.logger.info(f"{idx}-{name} ({iname} -> {oname})")
-        self.logger.info("---------------------------------------------------------")
+        self.init_pipeline()
+    
+    @property
+    def LLMEvaluator(self) -> 'LLMEvaluator':
+        """
+        Return the LLM Evaluator
+        """
+        from openfactcheck.evaluator.llm.evaluate import LLMEvaluator
+        return LLMEvaluator(self)
+    
+    @property
+    def FactCheckerEvaluator(self) -> 'FactCheckerEvaluator':
+        """
+        Return the FactChecker Evaluator
+        """
+        from openfactcheck.evaluator.factchecker.evaluate import FactCheckerEvaluator
+        return FactCheckerEvaluator(self)
+    
+    @property
+    def ResponseEvaluator(self) -> 'ResponseEvaluator':
+        """
+        Return the LLM Response Evaluator
+        """
+        from openfactcheck.evaluator.response.evaluate import ResponseEvaluator
+        return ResponseEvaluator(self)
 
     @staticmethod
-    def load_solvers(solver_paths):
+    def load_solvers(solver_paths: dict):
         """
         Load solvers from the given paths
         """
-        for solver_path in solver_paths:
-            abs_path = Path(solver_path).resolve()
-            if abs_path.is_dir():
-                sys.path.append(str(abs_path.parent))
-                Solver.load(str(abs_path), abs_path.name)
+        for key, value in solver_paths.items():
+            if key == "default":
+                for solver_path in value:
+                    abs_path = Path(solver_path).resolve()
+                    if abs_path.is_dir():
+                        sys.path.append(str(abs_path.parent))
+                        Solver.load(str(abs_path), f"{abs_path.parent.parent.name}.{abs_path.parent.name}.{abs_path.name}")
+            else:
+                for solver_path in value:
+                    abs_path = Path(solver_path).resolve()
+                    if abs_path.is_dir():
+                        sys.path.append(str(abs_path.parent))
+                        Solver.load(str(abs_path), abs_path.name)
 
     @staticmethod
     def list_solvers():
@@ -173,9 +201,9 @@ class OpenFactCheck:
         
         # Initialize the solver
         solver_cls = SOLVER_REGISTRY[solver_name]
-        solver_cls.input_name = args.get("input_name", solver_cls.input_name)
-        solver_cls.output_name = args.get("output_name", solver_cls.output_name)
-
+        for key, value in args.items():
+            setattr(solver_cls, key, value)
+        
         logger.info(f"Solver {solver_cls(args)} initialized")
 
         return solver_cls(args), solver_cls.input_name, solver_cls.output_name
@@ -194,15 +222,19 @@ class OpenFactCheck:
         """
         Initialize the pipeline with the given configuration
         """
-        pipeline = {}
+        self.pipeline = {}
         for required_solver in self.config.pipeline:
             if required_solver not in self.solver_configs:
                 logger.error(f"{required_solver} not in solvers config")
                 raise RuntimeError(f"{required_solver} not in solvers config")
             solver, input_name, output_name = self.init_solver(required_solver, self.solver_configs[required_solver])
-            pipeline[required_solver] = (solver, input_name, output_name)
+            self.pipeline[required_solver] = (solver, input_name, output_name)
 
-        return pipeline
+        self.logger.info("-------------- OpenFactCheck Initialized ----------------")
+        self.logger.info("Pipeline:")
+        for idx, (name, (solver, iname, oname)) in enumerate(self.pipeline.items()):
+            self.logger.info(f"{idx}-{name} ({iname} -> {oname})")
+        self.logger.info("---------------------------------------------------------")
     
     def init_pipeline_manually(self, pipeline: list):
         """
@@ -220,95 +252,8 @@ class OpenFactCheck:
             solver, input_name, output_name = self.init_solver(required_solver, self.solver_configs[required_solver])
             self.pipeline[required_solver] = (solver, input_name, output_name)
 
-    def persist_output(self, state: FactCheckerState, idx, solver_name, cont, sample_name=0):
-        result = {
-            "idx": idx,
-            "solver": solver_name,
-            "continue": cont,
-            "state": state.to_dict()
-        }
-        with open(os.path.join(self.output_path, f'{sample_name}.jsonl'), 'a', encoding="utf-8") as f:
-            f.write(json.dumps(result, ensure_ascii=False) + '\n')
-
-    def read_output(self, sample_name):
-        """
-        Read the output file for the given sample
-        """
-        with open(os.path.join(self.output_path, f'{sample_name}.jsonl'), 'r', encoding="utf-8") as f:
-            return [json.loads(line) for line in f]
-        
-    def remove_output(self, sample_name):
-        """
-        Remove the output file for the given sample
-        """
-        os.remove(os.path.join(self.output_path, f'{sample_name}.jsonl'))
-
-    def __call__(self, response: str, question: str = None, stream: bool = False, callback: Callable = None, **kwargs):
-        """
-        Evaluate the response using the pipeline
-        """
-
-        def evaluate_response():
-            # Check if sample_name is provided in kwargs else generate a random one
-            sample_name = kwargs.get("sample_name", str(uuid.uuid4().hex[:6]))
-
-            # Initialize the state
-            solver_output = FactCheckerState(question=question, response=response)
-
-            # Initialize the output name
-            output_name = "response"
-            for idx, (name, (solver, input_name, output_name)) in tqdm.tqdm(enumerate(self.pipeline.items()),
-                                                                total=len(self.pipeline)):
-                logger.info(f"Invoking solver: {idx}-{name}")
-                logger.info(f"State content: {solver_output}")
-            
-                try:
-                    # Solver input is the output of the previous solver
-                    solver_input = solver_output
-
-                    # Run the solver
-                    cont, solver_output = solver(solver_input, **kwargs)
-
-                    # Persist the output
-                    logger.debug(f"Latest result: {solver_output}")
-                    if callback:
-                        callback(
-                            index=idx,
-                            sample_name=sample_name,
-                            solver_name=name,
-                            input_name=input_name,
-                            output_name=output_name,
-                            input=solver_input.__dict__,
-                            output=solver_output.__dict__,
-                            continue_run=cont
-                        )
-                    
-                    # Stream the output
-                    if stream:
-                        yield {
-                            "index": idx,
-                            "solver_name": name,
-                            "input_name": input_name,
-                            "output_name": output_name,
-                            "input": solver_input.__dict__,
-                            "output": solver_output.__dict__,
-                            "continue_run": cont
-                        }
-
-                    self.persist_output(solver_output, idx, name, cont, sample_name=sample_name)
-                    
-                except:
-                    logger.error(f"Error at {traceback.format_exc()}")
-                    cont = False
-                    output_name = input_name
-
-                # Break if the solver returns False
-                if not cont:
-                    logger.info(f"Break at {name}")
-                    break
-                
-            if not stream:
-                return solver_output.get(output_name)
-        
-        # Execute the generator if stream is True, otherwise process normally
-        return evaluate_response()
+        self.logger.info("-------------- OpenFactCheck Initialized ----------------")
+        self.logger.info("Pipeline:")
+        for idx, (name, (solver, iname, oname)) in enumerate(self.pipeline.items()):
+            self.logger.info(f"{idx}-{name} ({iname} -> {oname})")
+        self.logger.info("---------------------------------------------------------")

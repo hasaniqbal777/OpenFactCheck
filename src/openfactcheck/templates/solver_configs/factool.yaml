@@ -1,11 +1,19 @@
-facttool_model: gpt-3.5-turbo
-factool_claimprocessor:
+factool_model: gpt-4
+all_pass_abstain_detector:
+  input_name: response
+  output_name: response
+factool_decontextualizer:
   input_name: response
   output_name: claims
-factool_retriever:
+factool_evidence_retriever:
   input_name: claims
-  output_name: claims_with_evidences
-  snippet_cnt: 10
-factool_verifier:
-  input_name: claims_with_evidences
-  output_name: label
+  output_name: evidences
+factool_claim_examiner:
+  input_name: evidences
+  output_name: claim_info
+factool_post_editor:
+  input_name: claim_info
+  output_name: claim_info
+concat_response_generator:
+  input_name: claim_info
+  output_name: output

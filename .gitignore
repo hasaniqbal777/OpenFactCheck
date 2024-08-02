@@ -12,7 +12,7 @@ ignore.*.tfvars
 # Project Specific
 DEVNOTES
 tmp/
-configs/dev*.json
+dev*.json
 
 # Python Specific
 .venv/

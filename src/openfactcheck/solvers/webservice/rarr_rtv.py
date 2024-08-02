@@ -5,7 +5,6 @@ from .rarr_utils.question_generation import run_rarr_question_generation
 from .rarr_utils.functional_prompt import QGEN_PROMPT
 from .rarr_utils import search
 
-
 @Solver.register("rarr_retriever", "claims", "claims_with_evidences")
 class RARRRetriever(StandardTaskSolver):
     def __init__(self, args):

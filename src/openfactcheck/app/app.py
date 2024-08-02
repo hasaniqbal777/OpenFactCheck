@@ -5,6 +5,7 @@ from streamlit_option_menu import option_menu
 from openfactcheck.core.base import OpenFactCheck, OpenFactCheckConfig
 from openfactcheck.app.sidebar import sidebar
 from openfactcheck.app.evaluate_response import evaluate_response
+from openfactcheck.app.evaluate_llm import evaluate_llm
 from openfactcheck.app.evaluate_factchecker import evaluate_factchecker
 from openfactcheck.app.utils import footer
 
@@ -63,10 +64,10 @@ class App:
         # Load the selected page
         if selected == "Evaluate LLM Response":
             evaluate_response(self.ofc)
-        # elif selected == "Evaluate LLM":
-        #     evaluate_llm()
+        elif selected == "Evaluate LLM":
+            evaluate_llm(self.ofc)
         elif selected == "Evaluate FactChecker":
-            evaluate_factchecker()
+            evaluate_factchecker(self.ofc)
         # elif selected == "Leaderboards":
         #     leaderboards()
         # else:

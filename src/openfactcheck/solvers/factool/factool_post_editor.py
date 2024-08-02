@@ -1,15 +1,12 @@
-from core import register_solver, FactCheckerState, StandardTaskSolver
+from openfactcheck.core.state import FactCheckerState
+from openfactcheck.core.solver import StandardTaskSolver, Solver
 
-##
-#
-# Factool Data Post-Editor
-#
-# Notes:
-#   Factool response post-processor. Used to presents the results in human-readable format and to save the analysis in a JSON file.
-#
-##
-@register_solver("factool_post_editor", "claim_info", "claim_info")
+@Solver.register("factool_post_editor", "claim_info", "claim_info")
 class FactoolPostEditor(StandardTaskSolver):
+    """
+    A solver to post-process the results of the Factool model. 
+    Used to presents the results in human-readable format and to save the analysis in a JSON file.
+    """
     def __init__(self, args):
         super().__init__(args)
 

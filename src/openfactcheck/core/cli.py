@@ -19,4 +19,11 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
 
-    ofc = OpenFactCheck(OpenFactCheckConfig(args.config_path))
+    def callback(index, sample_name, solver_name, input_name, output_name, input, output, continue_run):
+        print(f"Callback: {index}, {sample_name}, {solver_name}, {input_name}, {output_name}, {input}, {output}, {continue_run}")
+
+    config = OpenFactCheckConfig(args.config_path)
+    results = OpenFactCheck(config).LLMEvaluator.evaluate(model_name="gpt2", 
+                                                          input_path="src/openfactcheck/templates/llm/responses_test.csv")
+
+                                            

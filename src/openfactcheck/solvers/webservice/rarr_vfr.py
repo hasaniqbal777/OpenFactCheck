@@ -4,7 +4,6 @@ from openfactcheck.core.solver import StandardTaskSolver, Solver
 from .rarr_utils.agreement_gate import run_agreement_gate
 from .rarr_utils.functional_prompt import AGREEMENT_GATE_PROMPT
 
-
 @Solver.register("rarr_verifier", "claims_with_evidences", "label")
 class RARRAgreementGate(StandardTaskSolver):
     def __init__(self, args):

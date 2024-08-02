@@ -1,3 +1,4 @@
+import sys
 import os
 import importlib
 
@@ -121,9 +122,18 @@ class Solver:
             # Get the module name
             module_name = namespace + "." + solver_name
 
+            # Log the full module name to debug
+            logger.debug(f"Attempting to import {module_name} from {file_path}")
+
             # Import the module
-            logger.debug(f"Importing {module_name}")
-            importlib.import_module(module_name)
+            try:
+                importlib.import_module(module_name)
+                logger.debug(f"Successfully imported {module_name}")
+            except Exception as e:
+                logger.error(f"Failed to import {module_name}: {e}")
+                raise Exception(f"Failed to import {module_name}: {e}")
+
+            return module_name
 
     @staticmethod
     def load(path, namespace):

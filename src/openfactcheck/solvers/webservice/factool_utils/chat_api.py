@@ -151,7 +151,7 @@ class OpenAIChat():
             for messages in messages_list
         ]
 
-        return await asyncio.gather(*async_responses)
+        return await asyncio.gather(*async_responses, return_exceptions=True)
 
     def run(self, messages_list, expected_type):
         retry = 1
@@ -159,7 +159,6 @@ class OpenAIChat():
         messages_list_cur_index = [i for i in range(len(messages_list))]
 
         while retry > 0 and len(messages_list_cur_index) > 0:
-            print(f'{retry} retry left...')
             messages_list_cur = [messages_list[i] for i in messages_list_cur_index]
 
             predictions = asyncio.run(self.dispatch_openai_requests(
