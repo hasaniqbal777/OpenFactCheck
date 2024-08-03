@@ -41,8 +41,8 @@ class App:
                         layout="wide",
                         initial_sidebar_state="collapsed")
         
-        # Set up footer
-        footer("Copyright © 2024 MBZUAI | Made with ❤︎ by OpenFactCheck Team")
+        # # Set up footer
+        # footer("Copyright © 2024 MBZUAI | Made with ❤︎ by OpenFactCheck Team")
 
         # Set up Sidebar
         sidebar()
