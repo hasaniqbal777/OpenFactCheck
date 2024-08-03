@@ -43,7 +43,7 @@ dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools.package-data]
 openfactcheck = [
-  "openfactcheck/data/*.jsonl",
+  "data/*.jsonl",
   "templates/solver_configs/*.yaml",
   "templates/configs/*.json",
   "templates/factchecker/*.jsonl",
