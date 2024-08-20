@@ -127,6 +127,7 @@ json_url = "https://openfactcheck.readthedocs.io/en/latest/_static/versions.json
 # Define the version we use for matching in the version switcher.
 version_match = os.environ.get("READTHEDOCS_VERSION")
 release = openfactcheck.__version__
+
 # If READTHEDOCS_VERSION doesn't exist, we're not on RTD
 # If it is an integer, we're in a PR build and the version isn't correct.
 # If it's "latest" → change to "dev" (that's what we want the switcher to call it)
@@ -136,7 +137,7 @@ if not version_match or version_match.isdigit() or version_match == "latest":
         version_match = "dev"
         # We want to keep the relative reference if we are in dev mode
         # but we want the whole url if we are effectively in a released version
-        json_url = "_static/switcher.json"
+        json_url = "_static/versions.json"
     else:
         version_match = f"v{release}"
 elif version_match == "stable":
@@ -174,7 +175,7 @@ html_theme_options = {
     "navbar_align": "left",  # [left, content, right] For testing that the navbar items align properly
     # "show_nav_level": 2,
     # "announcement": "https://raw.githubusercontent.com/pydata/pydata-sphinx-theme/main/docs/_templates/custom-template.html",
-    # "show_version_warning_banner": True,
+    "show_version_warning_banner": True,
     # "navbar_center": ["navbar-nav"],
     # "navbar_start": ["navbar-logo"],
     "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],

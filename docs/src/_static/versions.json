@@ -1,12 +1,12 @@
 [
-    {
-        "version": "dev",
-        "url": "https://openfactcheck.readthedocs.io/en/latest/"
-    },
-    {
-        "name": "0.2.2 (stable)",
-        "version": "v0.2.2",
-        "url": "https://openfactcheck.readthedocs.io/en/stable/",
-        "preferred": true
-    }
+  {
+    "version": "dev",
+    "url": "https://openfactcheck.readthedocs.io/en/latest/"
+  },
+  {
+    "name": "0.2.2 (stable)",
+    "version": "v0.2.2",
+    "url": "https://openfactcheck.readthedocs.io/en/stable/",
+    "preferred": true
+  }
 ]
