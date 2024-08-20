@@ -117,4 +117,14 @@ git commit -m "🚀 $MESSAGE"
 git tag $VERSION
 git push origin $BRANCH
 git push origin $VERSION
-gh release create $VERSION --generate-notes
+
+# Regex to match development or release candidate versions
+if [[ "$VERSION" =~ -dev[0-9]+$ || "$VERSION" =~ -rc[0-9]+$ ]]; then
+    # It's a pre-release because it contains `dev` or `rc`
+    gh release create "$VERSION" --generate-notes --prerelease
+    echo "Pre-release $VERSION created."
+else
+    # It's a full release
+    gh release create "$VERSION" --generate-notes
+    echo "Release $VERSION created."
+fi
