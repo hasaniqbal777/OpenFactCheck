@@ -104,7 +104,17 @@ echo
 # Modify the VERSION file
 printf "$VERSION" > ./VERSION
 bump2version patch --new-version $VERSION_BUMP --allow-dirty --verbose 
-./docs/scripts/bumpversion.sh --new-version $VERSION_BUMP
+
+# Modify the docs version
+# Regex to match development or release candidate versions
+if [[ "$VERSION" =~ -dev[0-9]+$ || "$VERSION" =~ -rc[0-9]+$ ]]; then
+    # It's a pre-release because it contains `dev` or `rc`
+    c_echo $YELLOW "Skipping docs version bump for pre-release"
+else
+    # It's a full release
+    ./docs/scripts/bumpversion.sh --new-version $VERSION_BUMP
+fi
+
 
 # Commit and tag the release
 git add ./VERSION
