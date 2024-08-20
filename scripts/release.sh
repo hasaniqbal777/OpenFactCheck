@@ -36,7 +36,7 @@ VERSION_BUMP=${VERSION:1}
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # Require valid format for version
-rx='^v[0-9]+\.[0-9]+\.[0-9]+$'
+rx='^v[0-9]+\.[0-9]+\.[0-9]+(-(dev|rc)[0-9]+)?$'
 if ! [[ $VERSION =~ $rx ]]; then
     c_echo $RED "The version must be in the format 'vX.X.X'"
     exit 1
