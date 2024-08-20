@@ -9,6 +9,7 @@ authors = [
     {name = "Hasan Iqbal", email = "hasan.iqbal@mbzuai.ac.ae"},
     {name = "Yuxia Wang", email = "yuxia.wang@mbzuai.ac.ae"},
     {name = "Minghan Wang", email = "minghan.wang@monash.edu"},
+    {name = "Georgi Georgiev", email = "geoergi@uni-sofia.bg"},
     {name = "Jiahui Geng", email = "jiahui.geng@mbzuai.ac.ae"},
     {name = "Preslav Nakov", email = "preslav.nakov@mbzuai.ac.ae"}
 ]
@@ -40,6 +41,19 @@ classifiers = [
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
+
+[project.optional-dependencies]
+docs = [
+  "sphinx",
+  "sphinx-design",
+  "sphinx-favicon",
+  "sphinx-autobuild",
+  "sphinx-copybutton",
+  "sphinxext-rediraffe",
+  "sphinx-togglebutton",
+  "pydata-sphinx-theme",
+  "myst-parser"
+]
 
 [tool.setuptools.package-data]
 openfactcheck = [
