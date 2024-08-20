@@ -38,6 +38,7 @@ classifiers = [
 "Homepage" = "https://github.com/hasaniqbal777/openfactcheck"
 "Bug Tracker" = "https://github.com/hasaniqbal777/openfactcheck/issues"
 "Repository" = "https://github.com/hasaniqbal777/openfactcheck"
+"Documentation" = "https://openfactcheck.readthedocs.io"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
