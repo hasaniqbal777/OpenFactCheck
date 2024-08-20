@@ -17,10 +17,10 @@ pinned: false
 
 <p align="center">
 <a href="https://github.com/hasaniqbal777/OpenFactCheck/actions/workflows/release.yaml">
-    <img src="https://github.com/hasaniqbal777/OpenFactCheck/actions/workflows/release.yaml/badge.svg" alt="Release">
+    <img src="https://img.shields.io/github/actions/workflow/status/hasaniqbal777/openfactcheck/release.yaml?logo=github&label=Release" alt="Release">
 </a>
 <a href="https://openfactcheck.readthedocs.io">
-    <img alt="Read the Docs" src="https://img.shields.io/readthedocs/openfactcheck?logo=readthedocs&label=Docs">
+    <img alt="Docs" src="https://img.shields.io/readthedocs/openfactcheck?logo=readthedocs&label=Docs">
 </a>
 <br>
 <a href="https://opensource.org/licenses/Apache-2.0">
