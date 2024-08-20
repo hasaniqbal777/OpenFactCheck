@@ -14,7 +14,7 @@ VERSION_FILE="$DOCS_ROOT/src/_static/versions.json"
 # Formats a version entry
 function format_version_entry {
     local version=$1
-    echo "{\"name\": \"$version\", \"version\": \"v$version\", \"url\": \"$WEBSITE_HOME/$version/\"}"
+    echo "{\"name\": \"$version\", \"version\": \"v$version\", \"url\": \"$WEBSITE_HOME/v$version/\"}"
 }
 
 # Formats the development version entry

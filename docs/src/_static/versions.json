@@ -8,10 +8,5 @@
     "version": "v0.2.3",
     "url": "https://openfactcheck.readthedocs.io/en/stable/",
     "preferred": true
-  },
-  {
-    "name": "0.2.2",
-    "version": "v0.2.2",
-    "url": "https://openfactcheck.readthedocs.io/en/0.2.2/"
   }
 ]
