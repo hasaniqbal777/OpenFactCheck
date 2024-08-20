@@ -8,6 +8,9 @@ https://www.sphinx-doc.org/en/master/usage/configuration.html
 # -- Path setup --------------------------------------------------------------
 import os
 import sys
+import inspect
+import warnings
+
 from pathlib import Path
 from typing import Any, Dict
 
@@ -33,6 +36,12 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.intersphinx",
     "sphinx.ext.graphviz",
+    "sphinx.ext.linkcode",
+    "sphinx.ext.coverage",
+    "sphinx.ext.doctest",
+    "sphinx.ext.extlinks",
+    "sphinx.ext.ifconfig",
+    "sphinx.ext.mathjax",
     "sphinxext.rediraffe",
     "sphinx_design",
     "sphinx_copybutton",
@@ -207,7 +216,9 @@ html_context = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
-html_css_files = ["custom.css"]
+html_css_files = [
+    "_css/custom.css",
+]
 html_js_files = ["custom-icons.js"]
 todo_include_todos = True
 
@@ -245,6 +256,65 @@ favicons = [
 
 # -- application setup -------------------------------------------------------
 
+# based on numpy doc/source/conf.py
+def linkcode_resolve(domain, info) -> str | None:
+    """
+    Determine the URL corresponding to Python object
+    """
+    if domain != "py":
+        return None
+
+    modname = info["module"]
+    fullname = info["fullname"]
+
+    submod = sys.modules.get(modname)
+    if submod is None:
+        return None
+
+    obj = submod
+    for part in fullname.split("."):
+        try:
+            with warnings.catch_warnings():
+                # Accessing deprecated objects will generate noisy warnings
+                warnings.simplefilter("ignore", FutureWarning)
+                obj = getattr(obj, part)
+        except AttributeError:
+            return None
+
+    try:
+        fn = inspect.getsourcefile(inspect.unwrap(obj))
+    except TypeError:
+        try:  # property
+            fn = inspect.getsourcefile(inspect.unwrap(obj.fget))
+        except (AttributeError, TypeError):
+            fn = None
+    if not fn:
+        return None
+
+    try:
+        source, lineno = inspect.getsourcelines(obj)
+    except TypeError:
+        try:  # property
+            source, lineno = inspect.getsourcelines(obj.fget)
+        except (AttributeError, TypeError):
+            lineno = None
+    except OSError:
+        lineno = None
+
+    if lineno:
+        linespec = f"#L{lineno}-L{lineno + len(source) - 1}"
+    else:
+        linespec = ""
+
+    fn = os.path.relpath(fn, start=os.path.dirname(openfactcheck.__file__))
+
+    if "+" in openfactcheck.__version__:
+        return f"https://github.com/hasaniqbal777/openfactcheck/blob/main/openfactcheck/{fn}{linespec}"
+    else:
+        return (
+            f"https://github.com/hasaniqbal777/openfactcheck/blob/"
+            f"v{openfactcheck.__version__}/openfactcheck/{fn}{linespec}"
+        )
 
 def setup_to_main(
     app: Sphinx, pagename: str, templatename: str, context, doctree
