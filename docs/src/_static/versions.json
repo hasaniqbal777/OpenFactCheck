@@ -4,9 +4,14 @@
     "url": "https://openfactcheck.readthedocs.io/en/latest/"
   },
   {
-    "name": "0.2.3 (stable)",
-    "version": "v0.2.3",
+    "name": "0.2.4 (stable)",
+    "version": "v0.2.4",
     "url": "https://openfactcheck.readthedocs.io/en/stable/",
     "preferred": true
+  },
+  {
+    "name": "0.2.3",
+    "version": "v0.2.3",
+    "url": "https://openfactcheck.readthedocs.io/en/v0.2.3/"
   }
 ]
