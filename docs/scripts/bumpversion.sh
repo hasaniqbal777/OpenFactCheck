@@ -19,7 +19,7 @@ function format_version_entry {
 
 # Formats the development version entry
 function format_dev_version_entry {
-    echo "{\"version\": \"dev\", \"url\": \"$WEBSITE_HOME/latest/\"}"
+    echo "{\"name\": \"dev\", \"version\": \"dev\", \"url\": \"$WEBSITE_HOME/dev/\"}"
 }
 
 # Formats the stable version entry
