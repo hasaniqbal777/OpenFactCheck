@@ -35,6 +35,10 @@ It consists of three core modules:
 
 Explore the documentation to learn more about the library, its features, how to use and contribute to it, and more.
 
+```{warning}
+The API and documentation are still under heavy development and may change in future versions.
+```
+
 ```{eval-rst}
 .. grid:: 1 2 2 2
     :gutter: 4
@@ -86,7 +90,7 @@ Explore the documentation to learn more about the library, its features, how to 
 
         +++
 
-        .. button-ref:: api/index
+        .. button-ref:: reference/index
             :ref-type: doc
             :color: secondary
             :expand:
@@ -124,6 +128,6 @@ Explore the documentation to learn more about the library, its features, how to 
 
 getting_started/index
 user_guide/index
-api/index
+reference/index
 development/index
 ```

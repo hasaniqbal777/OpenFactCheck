@@ -18,6 +18,7 @@ import openfactcheck
 from sphinx.application import Sphinx
 from sphinx.locale import _
 
+sys.path.insert(0, os.path.abspath('../../src/openfactcheck'))
 sys.path.append(str(Path(".").resolve()))
 
 # -- Project information -----------------------------------------------------
@@ -243,13 +244,15 @@ favicons = [
 ]
 
 # -- Options for autosummary/autodoc output ------------------------------------
-# autosummary_generate = True
-# autodoc_typehints = "description"
-# autodoc_member_order = "groupwise"
+autosummary_generate = True
+autodoc_typehints = "description"
+autodoc_member_order = "groupwise"
 
 # -- Options for autoapi -------------------------------------------------------
 # autoapi_type = "python"
-# autoapi_dirs = ["../../src/openfactcheck"]
+# autoapi_dirs = [
+#     "../../src/openfactcheck/lib",
+# ]
 # autoapi_keep_files = True
 # autoapi_root = "api"
 # autoapi_member_order = "groupwise"
@@ -309,11 +312,11 @@ def linkcode_resolve(domain, info) -> str | None:
     fn = os.path.relpath(fn, start=os.path.dirname(openfactcheck.__file__))
 
     if "+" in openfactcheck.__version__:
-        return f"https://github.com/hasaniqbal777/openfactcheck/blob/main/openfactcheck/{fn}{linespec}"
+        return f"https://github.com/hasaniqbal777/openfactcheck/blob/main/src/openfactcheck/{fn}{linespec}"
     else:
         return (
             f"https://github.com/hasaniqbal777/openfactcheck/blob/"
-            f"v{openfactcheck.__version__}/openfactcheck/{fn}{linespec}"
+            f"v{openfactcheck.__version__}/src/openfactcheck/{fn}{linespec}"
         )
 
 def setup_to_main(
