@@ -5,8 +5,9 @@ import pandas as pd
 import streamlit as st
 from importlib import resources as pkg_resources
 
-from openfactcheck.core.base import OpenFactCheck
 from openfactcheck.app.utils import metric_card
+
+from openfactcheck import OpenFactCheck
 from openfactcheck.templates import llm as templates_dir
 
 # Import solver configuration templates

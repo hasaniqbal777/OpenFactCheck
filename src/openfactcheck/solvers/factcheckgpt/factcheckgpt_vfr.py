@@ -1,8 +1,7 @@
 import json
 from typing import Any
 
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
 from .factcheckgpt_utils.prompt import VERIFY_PROMPT
 from .factcheckgpt_utils.openai_api import gpt

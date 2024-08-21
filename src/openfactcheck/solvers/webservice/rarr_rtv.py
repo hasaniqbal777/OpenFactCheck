@@ -1,5 +1,5 @@
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck.state import FactCheckerState
+from openfactcheck.solver import StandardTaskSolver, Solver
 
 from .rarr_utils.question_generation import run_rarr_question_generation
 from .rarr_utils.functional_prompt import QGEN_PROMPT

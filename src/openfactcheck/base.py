@@ -1,22 +1,21 @@
 import os 
 import sys
-import json
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from openfactcheck.lib.logger import logger
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.lib.config import OpenFactCheckConfig
-from openfactcheck.core.solver import SOLVER_REGISTRY, Solver
+from openfactcheck.lib import logger
+from openfactcheck.lib import OpenFactCheckConfig
+from openfactcheck.solver import SOLVER_REGISTRY, Solver
 
 if TYPE_CHECKING:
-    from openfactcheck.evaluator.llm.evaluate import LLMEvaluator
-    from openfactcheck.evaluator.response.evaluate import ResponseEvaluator
-    from openfactcheck.evaluator.factchecker.evaluate import FactCheckerEvaluator
+    from openfactcheck.evaluator.llm import LLMEvaluator
+    from openfactcheck.evaluator.response import ResponseEvaluator
+    from openfactcheck.evaluator.checker import CheckerEvaluator
 
 class OpenFactCheck:
     """
-    OpenFactCheck class to evaluate the factuality of a response using a pipeline of solvers.
+    Base class for OpenFactCheck that initializes the solvers and pipeline
+    with the given configuration.
 
     Parameters
     ----------
@@ -105,23 +104,23 @@ class OpenFactCheck:
         """
         Return the LLM Evaluator
         """
-        from openfactcheck.evaluator.llm.evaluate import LLMEvaluator
+        from openfactcheck.evaluator.llm import LLMEvaluator
         return LLMEvaluator(self)
     
     @property
-    def FactCheckerEvaluator(self) -> 'FactCheckerEvaluator':
+    def FactCheckerEvaluator(self) -> 'CheckerEvaluator':
         """
         Return the FactChecker Evaluator
         """
-        from openfactcheck.evaluator.factchecker.evaluate import FactCheckerEvaluator
-        return FactCheckerEvaluator(self)
+        from openfactcheck.evaluator.checker import CheckerEvaluator
+        return CheckerEvaluator(self)
     
     @property
     def ResponseEvaluator(self) -> 'ResponseEvaluator':
         """
         Return the LLM Response Evaluator
         """
-        from openfactcheck.evaluator.response.evaluate import ResponseEvaluator
+        from openfactcheck.evaluator.response import ResponseEvaluator
         return ResponseEvaluator(self)
 
     @staticmethod

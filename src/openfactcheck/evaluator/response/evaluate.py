@@ -6,10 +6,13 @@ import traceback
 from typing import Callable
 
 from openfactcheck.lib.logger import logger
-from openfactcheck.core.base import OpenFactCheck
-from openfactcheck.core.state import FactCheckerState
+from openfactcheck.base import OpenFactCheck
+from openfactcheck.state import FactCheckerState
 
 class ResponseEvaluator:
+    """
+    This class is used to evaluate the factuality of a response using the pipeline of solvers.
+    """
     def __init__(self, ofc: OpenFactCheck):
         """
         Initialize the ResponseEvaluator object.

@@ -11,4 +11,4 @@ source "${BASH_SOURCE%/*}/common.sh"
 
 # Executing Python script
 export PYTHONPATH="$PYTHONPATH:src/"
-python src/openfactcheck/core/cli.py "$@"
+python src/openfactcheck/cli.py "$@"

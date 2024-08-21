@@ -3,7 +3,6 @@ import re
 import pytz
 import datetime
 import pandas as pd
-import seaborn as sns
 from openai import OpenAI
 import matplotlib.pyplot as plt
 

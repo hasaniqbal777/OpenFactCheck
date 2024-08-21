@@ -1,14 +1,14 @@
-from .utils.prompt_base import EDITOR_PROMPT
-from .utils.api import chatgpt
-import openai
 import time
 import json
-from core.task_solver import StandardTaskSolver
-from core.fact_check_state import FactCheckerState
-from core import register_solver
+import openai
+
+from .utils.prompt_base import EDITOR_PROMPT
+from .utils.api import chatgpt
+
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
 
-@register_solver("chatgpt_post_editor", "claim_info", "claim_info")
+@Solver.register("chatgpt_post_editor", "claim_info", "claim_info")
 class ChatGPTPostEditor(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)

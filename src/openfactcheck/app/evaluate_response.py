@@ -3,7 +3,7 @@ import time
 import pandas as pd
 import streamlit as st
 
-from openfactcheck.core.base import OpenFactCheck
+from openfactcheck.base import OpenFactCheck
 from openfactcheck.app.utils import metric_card
 
 def extract_text(claim):

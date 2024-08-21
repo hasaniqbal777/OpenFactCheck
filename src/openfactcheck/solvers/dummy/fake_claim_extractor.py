@@ -1,8 +1,6 @@
 import random
 
-from openfactcheck.core.solver import Solver
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
 @Solver.register("fake_claim_extractor", "response", "claims")
 class FakeClaimExtractor(StandardTaskSolver):

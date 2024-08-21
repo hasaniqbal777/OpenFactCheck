@@ -5,14 +5,14 @@ from importlib import resources as pkg_resources
 from sklearn.metrics import accuracy_score, precision_score, f1_score, recall_score
 from sklearn.metrics import classification_report, confusion_matrix
 
-from openfactcheck.core.base import OpenFactCheck
+from openfactcheck import OpenFactCheck
 from openfactcheck.templates import factchecker as templates_dir
 
 # Import solver configuration templates
 gold_claims_template_path = str(pkg_resources.files(templates_dir) / "gold/claims.jsonl")
 gold_documents_template_path = str(pkg_resources.files(templates_dir) / "gold/documents.jsonl")
 
-class FactCheckerEvaluator():
+class CheckerEvaluator():
     """
     This class is used to evaluate the performance of a FactChecker.
 

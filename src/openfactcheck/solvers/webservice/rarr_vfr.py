@@ -1,5 +1,5 @@
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck.state import FactCheckerState
+from openfactcheck.solver import StandardTaskSolver, Solver
 
 from .rarr_utils.agreement_gate import run_agreement_gate
 from .rarr_utils.functional_prompt import AGREEMENT_GATE_PROMPT

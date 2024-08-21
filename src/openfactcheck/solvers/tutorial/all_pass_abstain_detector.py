@@ -2,9 +2,6 @@ from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
 @Solver.register("all_pass_abstain_detector", "response", "response")
 class AllPassAbstainDetector(StandardTaskSolver):
-    """
-    A solver to detect if all the claims are abstained (i.e., no claim is made).
-    """
     def __init__(self, args):
         super().__init__(args)
 

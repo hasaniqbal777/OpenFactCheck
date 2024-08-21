@@ -1,9 +1,7 @@
 import random
 import string
 
-from openfactcheck.core.solver import Solver
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
 @Solver.register("ignorant_search_engine_retriever", "claims", "claims_with_evidences")
 class IgnorantSearchEngineRetriever(StandardTaskSolver):

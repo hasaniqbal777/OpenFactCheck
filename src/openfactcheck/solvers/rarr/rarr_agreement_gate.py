@@ -1,15 +1,9 @@
-import logging
-
-from core.fact_check_state import FactCheckerState
-from core.task_solver import StandardTaskSolver
-from core import register_solver
-import random
-import string
 from .rarr_utils import agreement_gate
 from .prompts import rarr_prompts
 
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
-@register_solver("rarr_agreement_gate", "claims_with_evidences", "claims_with_gates")
+@Solver.register("rarr_agreement_gate", "claims_with_evidences", "claims_with_gates")
 class RARRAgreementGate(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)

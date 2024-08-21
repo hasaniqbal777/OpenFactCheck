@@ -1,11 +1,9 @@
 from .utils.prompt_base import DECONTEXTILISATION_PROMPT
 from .utils.api import chatgpt
-from core.fact_check_state import FactCheckerState
-from core.task_solver import StandardTaskSolver
-from core import register_solver
 
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
-@register_solver("chatgpt_decontextualizer", "sentences", "claims")
+@Solver.register("chatgpt_decontextualizer", "sentences", "claims")
 class ChatGPTDecontextualizer(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)

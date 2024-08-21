@@ -1,16 +1,15 @@
-from .utils.api import chatgpt, search_google, search_bing
-import openai
 import time
-from .utils.prompt_base import QGEN_PROMPT
-from typing import List, Dict, Any
-from .utils.web_util import scrape_url, select_doc_by_keyword_coverage, select_passages_by_semantic_similarity
 import json
-from core import register_solver
-from core.fact_check_state import FactCheckerState
-from core.task_solver import StandardTaskSolver
+import openai
+from typing import List, Dict, Any
 
+from .utils.prompt_base import QGEN_PROMPT
+from .utils.api import chatgpt, search_google, search_bing
+from .utils.web_util import scrape_url, select_doc_by_keyword_coverage, select_passages_by_semantic_similarity
 
-@register_solver("search_engine_evidence_retriever", "claims", "evidences")
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
+
+@Solver.register("search_engine_evidence_retriever", "claims", "evidences")
 class SearchEngineEvidenceRetriever(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)

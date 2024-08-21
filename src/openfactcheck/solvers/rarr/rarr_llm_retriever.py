@@ -1,16 +1,10 @@
-import logging
-
-from core.fact_check_state import FactCheckerState
-from core.task_solver import StandardTaskSolver
-from core import register_solver
-import random
-import string
 from .rarr_utils.hallucination import run_evidence_hallucination
 from .prompts.hallucination_prompts import EVIDENCE_HALLUCINATION
 
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
-@register_solver("llm_retriever", "claims_with_questions", "claims_with_evidences")
-class LLMRetriever(StandardTaskSolver):
+@Solver.register("llm_retriever", "claims_with_questions", "claims_with_evidences")
+class RARRLLMRetriever(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)
         self.model = self.global_config.get("model", "gpt-3.5-turbo-instruct")

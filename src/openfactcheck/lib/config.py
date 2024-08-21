@@ -1,18 +1,15 @@
 import os
 import json
 import yaml
-import openai
-import asyncio
 import logging
 import datasets
 import transformers
 from pathlib import Path
-from typing import Union
 from collections import namedtuple
 from importlib import resources as pkg_resources
 
 from openfactcheck.lib.logger import logger, set_logger_level
-from openfactcheck.lib.errors import ConfigValidationError
+from openfactcheck.errors import ConfigValidationError
 from openfactcheck import templates as solver_config_templates_dir
 from openfactcheck import solvers as solver_templates_dir
 
@@ -34,7 +31,7 @@ class OpenFactCheckConfig:
 
     Parameters
     ----------
-    filename: str, Path
+    filename_or_path: str or path object
         The path to the configuration file.
 
     Attributes
@@ -65,10 +62,10 @@ class OpenFactCheckConfig:
     --------
     >>> config = OpenFactCheckConfig("config.json")
     """
-    def __init__(self, filename: Union[str, Path] = "config.json"):
+    def __init__(self, filename_or_path: str | Path = "config.json"):
         # Setup Logger
         self.logger = logger
-        self.filename = filename
+        self.filename_or_path = filename_or_path
 
         # Define namedtuple structures
         Secrets = namedtuple("Secrets", ["openai_api_key", 
@@ -87,14 +84,14 @@ class OpenFactCheckConfig:
 
         try:
             # Check if the file exists
-            if Path(self.filename).exists():
+            if Path(self.filename_or_path).exists():
                 # Loading Config File
-                with open(self.filename, encoding="utf-8") as file:
+                with open(self.filename_or_path, encoding="utf-8") as file:
                     self.config = json.load(file)
-                    self.logger.info(f"Config file loaded successfully from {self.filename}")
+                    self.logger.info(f"Config file loaded successfully from {self.filename_or_path}")
             else:
                 # Create a dummy configuration file
-                self.logger.warning(f"Config file not found: {self.filename}")
+                self.logger.warning(f"Config file not found: {self.filename_or_path}")
                 self.config = {}
 
             # Initialize Retries
@@ -185,12 +182,12 @@ class OpenFactCheckConfig:
             logging.getLogger("asyncio").setLevel(logging.CRITICAL)
 
         except FileNotFoundError:
-            self.logger.error(f"Config file not found: {self.filename}")
-            raise FileNotFoundError(f"Config file not found: {self.filename}")
+            self.logger.error(f"Config file not found: {self.filename_or_path}")
+            raise FileNotFoundError(f"Config file not found: {self.filename_or_path}")
         
         except json.JSONDecodeError:
-            self.logger.error(f"Invalid JSON in config file: {self.filename}")
-            raise ValueError(f"Invalid JSON in config file: {self.filename}")
+            self.logger.error(f"Invalid JSON in config file: {self.filename_or_path}")
+            raise ValueError(f"Invalid JSON in config file: {self.filename_or_path}")
         
         except ConfigValidationError as e:
             self.logger.error(f"Configuration validation failed: {e}")
@@ -270,35 +267,35 @@ class SolversConfig:
 
     Parameters
     ----------
-    filename(s): str, Path, list
+    filename(s): str, list or path object 
         The path to the solvers configuration or a list of paths to multiple solvers configurations.
     """
-    def __init__(self, filename_s: Union[str, Path, list]):
+    def __init__(self, filename_or_path_s: str | Path | list):
         self.logger = logger
-        self.filename_s = filename_s
+        self.filename_or_path_or_path_s = filename_or_path_s
         self.solvers = {}
 
         try:
-            if isinstance(self.filename_s, (str, Path)):
-                self.load_config(self.filename_s)
-            elif isinstance(self.filename_s, list):
-                for filename in self.filename_s:
+            if isinstance(self.filename_or_path_or_path_s, (str, Path)):
+                self.load_config(self.filename_or_path_or_path_s)
+            elif isinstance(self.filename_or_path_or_path_s, list):
+                for filename in self.filename_or_path_or_path_s:
                     self.load_config(filename)
             else:
-                self.logger.error(f"Invalid filename type: {type(self.filename_s)}")
-                raise ValueError(f"Invalid filename type: {type(self.filename_s)}")
+                self.logger.error(f"Invalid filename type: {type(self.filename_or_path_or_path_s)}")
+                raise ValueError(f"Invalid filename type: {type(self.filename_or_path_or_path_s)}")
             
         except FileNotFoundError:
-            self.logger.error(f"Solvers file not found: {self.filename_s}")
-            raise FileNotFoundError(f"Solvers file not found: {self.filename_s}")
+            self.logger.error(f"Solvers file not found: {self.filename_or_path_or_path_s}")
+            raise FileNotFoundError(f"Solvers file not found: {self.filename_or_path_or_path_s}")
         except json.JSONDecodeError:
-            self.logger.error(f"Invalid JSON in solvers file: {self.filename_s}")
-            raise ValueError(f"Invalid JSON in solvers file: {self.filename_s}")
+            self.logger.error(f"Invalid JSON in solvers file: {self.filename_or_path_or_path_s}")
+            raise ValueError(f"Invalid JSON in solvers file: {self.filename_or_path_or_path_s}")
         except Exception as e:
             self.logger.error(f"Unexpected error loading solvers file: {e}")
             raise Exception(f"Unexpected error loading solvers file: {e}")
 
-    def load_config(self, filename: Union[str, Path]):
+    def load_config(self, filename: str | Path):
         with open(filename, encoding="utf-8") as file:
             if filename.endswith(".yaml"):
                 file_data = yaml.load(file, Loader=yaml.FullLoader) 

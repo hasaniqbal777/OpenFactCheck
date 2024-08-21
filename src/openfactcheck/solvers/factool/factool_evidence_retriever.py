@@ -5,8 +5,7 @@ from .factool_utils.chat_api import OpenAIChat
 from .factool_utils.search_api import GoogleSerperAPIWrapper
 from .factool_utils.prompt import QUERY_GENERATION_PROMPT
 
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
 @Solver.register("factool_evidence_retriever", "claims", "evidences")
 class FactoolEvidenceRetriever(StandardTaskSolver):

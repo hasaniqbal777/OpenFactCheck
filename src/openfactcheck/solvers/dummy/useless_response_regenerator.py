@@ -1,5 +1,4 @@
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
 @Solver.register("useless_response_regenerator", "claims_with_tags", "output")
 class UselessResponseRegenerator(StandardTaskSolver):

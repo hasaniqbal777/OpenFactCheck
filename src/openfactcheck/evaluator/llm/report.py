@@ -5,7 +5,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from importlib import resources as pkg_resources
 
-from openfactcheck.lib.logger import logger
+from openfactcheck.lib import logger
 from openfactcheck.templates import report as report_dir
 
 # Import latex template

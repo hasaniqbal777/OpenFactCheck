@@ -1,9 +1,6 @@
-from core.fact_check_state import FactCheckerState
-from core.task_solver import StandardTaskSolver
-from core import register_solver
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
-
-@register_solver("concat_response_generator", "claim_info", "output")
+@Solver.register("concat_response_generator", "claim_info", "output")
 class ConcatResponseRegenerator(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)

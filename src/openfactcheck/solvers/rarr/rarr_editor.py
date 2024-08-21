@@ -1,16 +1,11 @@
-import logging
-
-from core.fact_check_state import FactCheckerState
-from core.task_solver import StandardTaskSolver
-from core import register_solver
-import random
-import string
-from .rarr_utils import agreement_gate, editor, evidence_selection
-from .prompts import rarr_prompts
 import Levenshtein
 
+from .rarr_utils import agreement_gate, editor, evidence_selection
+from .prompts import rarr_prompts
 
-@register_solver("rarr_editor", "claims_with_evidences", "revised_claims")
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
+
+@Solver.register("rarr_editor", "claims_with_evidences", "revised_claims")
 class RARREditor(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)

@@ -1,12 +1,9 @@
+import spacy
 import logging
 
-import spacy
-from core.fact_check_state import FactCheckerState
-from core.task_solver import StandardTaskSolver
-from core import register_solver
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
-
-@register_solver("spacy_response_decomposer", 'response', 'sentences')
+@Solver.register("spacy_response_decomposer", 'response', 'sentences')
 class SpacyResponseDecomposer(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)

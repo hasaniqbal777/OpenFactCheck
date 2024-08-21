@@ -1,5 +1,5 @@
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck.state import FactCheckerState
+from openfactcheck.solver import StandardTaskSolver, Solver
 
 from .factool_utils.chat_api import OpenAIChat
 from .factool_utils.prompt import VERIFICATION_PROMPT

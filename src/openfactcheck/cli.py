@@ -1,7 +1,7 @@
 import argparse
 
-from openfactcheck.core.base import OpenFactCheck
-from openfactcheck.lib.config import OpenFactCheckConfig
+from openfactcheck import OpenFactCheck
+from openfactcheck.lib import OpenFactCheckConfig
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Initialize OpenFactCheck with custom configuration.')
@@ -23,7 +23,5 @@ if __name__ == "__main__":
         print(f"Callback: {index}, {sample_name}, {solver_name}, {input_name}, {output_name}, {input}, {output}, {continue_run}")
 
     config = OpenFactCheckConfig(args.config_path)
-    results = OpenFactCheck(config).LLMEvaluator.evaluate(model_name="gpt2", 
-                                                          input_path="src/openfactcheck/templates/llm/responses_test.csv")
-
-                                            
+    results = OpenFactCheck(config).ResponseEvaluator.evaluate("Abraham Lincoln was the first president of the United States.",
+                                                               callback=callback)

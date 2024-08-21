@@ -4,8 +4,8 @@ import uuid
 import pandas as pd
 from importlib import resources as pkg_resources
 
-from openfactcheck.lib.logger import logger
-from openfactcheck.core.base import OpenFactCheck
+from openfactcheck import OpenFactCheck
+from openfactcheck.lib import logger
 from openfactcheck.evaluator.llm.evaluate_snowballing import SnowballingEvaluator
 from openfactcheck.evaluator.llm.evaluate_selfaware import SelfAwareEvaluator
 from openfactcheck.evaluator.llm.evaluate_freshqa import FreshQAEvaluator

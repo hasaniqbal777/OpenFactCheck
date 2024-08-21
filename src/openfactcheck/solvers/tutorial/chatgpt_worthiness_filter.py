@@ -1,13 +1,11 @@
+from argparse import Namespace
+
 from .utils.prompt_base import CHECK_WORTHINESS_LABEL_ONLY_PROMPT
 from .utils.api import chatgpt
-from typing import List, Tuple
-from argparse import Namespace
-from core.task_solver import StandardTaskSolver
-from core.fact_check_state import FactCheckerState
-from core import register_solver
 
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
-@register_solver("chatgpt_worthiness_filter", "claims", "claims")
+@Solver.register("chatgpt_worthiness_filter", "claims", "claims")
 class ChatGPTWorthinessFilter(StandardTaskSolver):
     def __init__(self, args: Namespace):
         super().__init__(args)

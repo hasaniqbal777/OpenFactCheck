@@ -1,19 +1,9 @@
-import logging
-
-from core.fact_check_state import FactCheckerState
-from core.task_solver import StandardTaskSolver
-from core import register_solver
-import random
-import string
-import os
-import time
-from typing import List
-import openai
 from .rarr_utils.question_generation import run_rarr_question_generation
 from .prompts import rarr_prompts
 
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
-@register_solver("rarr_question_generator", "claims_with_context", "claims_with_questions")
+@Solver.register("rarr_question_generator", "claims_with_context", "claims_with_questions")
 class RARRQuestionGenerator(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)

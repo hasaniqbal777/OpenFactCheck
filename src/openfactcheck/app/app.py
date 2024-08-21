@@ -2,7 +2,8 @@ import argparse
 import streamlit as st
 from streamlit_option_menu import option_menu
 
-from openfactcheck.core.base import OpenFactCheck, OpenFactCheckConfig
+from openfactcheck import OpenFactCheck
+from openfactcheck.lib import OpenFactCheckConfig
 from openfactcheck.app.sidebar import sidebar
 from openfactcheck.app.evaluate_response import evaluate_response
 from openfactcheck.app.evaluate_llm import evaluate_llm

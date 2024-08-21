@@ -1,5 +1,4 @@
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
 @Solver.register("concat_response_generator", "claim_info", "output")
 class ConcatResponseRegenerator(StandardTaskSolver):

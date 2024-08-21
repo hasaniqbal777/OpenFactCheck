@@ -11,8 +11,8 @@ from copy import deepcopy
 from openai import RateLimitError
 from sentence_transformers import CrossEncoder
 
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck.state import FactCheckerState
+from openfactcheck.solver import StandardTaskSolver, Solver
 
 from .factcheckgpt_utils.openai_api import gpt
 from .factcheckgpt_utils.prompt import QGEN_PROMPT, QGEN_PROMPT_FMT

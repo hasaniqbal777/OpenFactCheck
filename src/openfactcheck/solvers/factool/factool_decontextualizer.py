@@ -1,10 +1,7 @@
-import os
-import yaml
-
 from .factool_utils.chat_api import OpenAIChat
 from .factool_utils.prompt import CLAIM_EXTRACTION_PROMPT
-from openfactcheck.core.solver import StandardTaskSolver, Solver
-from openfactcheck.core.state import FactCheckerState
+
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
 @Solver.register("factool_decontextualizer", "response", "claims")
 class FactoolDecontextualizer(StandardTaskSolver):

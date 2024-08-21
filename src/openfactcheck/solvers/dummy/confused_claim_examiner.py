@@ -1,7 +1,6 @@
 import random
 
-from openfactcheck.core.state import FactCheckerState
-from openfactcheck.core.solver import StandardTaskSolver, Solver
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
 
 @Solver.register("confused_claim_examiner", "claims_with_evidences", "claims_with_tags")
 class ConfusedClaimExaminer(StandardTaskSolver):

@@ -7,8 +7,8 @@ import seaborn as sns
 from hashlib import md5
 import matplotlib.pyplot as plt
 
-from openfactcheck.lib.logger import logger
-from openfactcheck.core.base import OpenFactCheck
+from openfactcheck import OpenFactCheck
+from openfactcheck.lib import logger
 
 class FreeTextEvaluator():
     def __init__(self, ofc: OpenFactCheck):

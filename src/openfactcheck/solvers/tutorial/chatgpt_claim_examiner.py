@@ -1,15 +1,13 @@
-# from claim_examiner import ClaimExaminer
-from utils.prompt_base import STANCE_DETECTION_PROMPT
-from utils.api import chatgpt
 import openai
 import time
 import json
-from core.task_solver import StandardTaskSolver
-from core.fact_check_state import FactCheckerState
-from core import register_solver
 
+from utils.prompt_base import STANCE_DETECTION_PROMPT
+from utils.api import chatgpt
 
-@register_solver("chat_gpt_claim_examiner", "evidences", "claim_info")
+from openfactcheck import FactCheckerState, StandardTaskSolver, Solver
+
+@Solver.register("chat_gpt_claim_examiner", "evidences", "claim_info")
 class ChatGPTClaimExaminer(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)

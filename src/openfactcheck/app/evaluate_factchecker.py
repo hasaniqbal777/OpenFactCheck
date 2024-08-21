@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 from importlib import resources as pkg_resources
 
 from openfactcheck.app.utils import metric_card
-from openfactcheck.core.base import OpenFactCheck
+
+from openfactcheck import OpenFactCheck
 from openfactcheck.templates import factchecker as templates_dir
 
 # Import solver configuration templates
