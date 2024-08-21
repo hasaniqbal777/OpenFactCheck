@@ -1,2 +1,2 @@
 # This file is used to install the library in Hugging Face Spaces before running the pipeline
-openfactcheck==0.2.5-dev2
+openfactcheck==0.2.5-dev3
