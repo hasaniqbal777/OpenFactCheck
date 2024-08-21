@@ -129,8 +129,13 @@ git push origin $BRANCH
 git push origin $VERSION
 
 # Regex to match development or release candidate versions
-if [[ "$VERSION" =~ -dev[0-9]+$ || "$VERSION" =~ -rc[0-9]+$ ]]; then
-    # It's a pre-release because it contains `dev` or `rc`
+if [[ "$VERSION" =~ -dev[0-9]+$ ]]; then
+    # It's a development release because it contains `dev`
+    c_echo $YELLOW "Skipping release to GitHub for development release"
+    exit 0
+fi
+if [[ "$VERSION" =~ -rc[0-9]+$ ]]; then
+    # It's a pre-release because it contains `rc`
     gh release create "$VERSION" --generate-notes --prerelease
     echo "Pre-release $VERSION created."
 else
