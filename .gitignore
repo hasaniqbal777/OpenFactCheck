@@ -1,0 +1,35 @@
+# MacOS
+.DS_Store
+
+# Terraform Specific
+**/.terraform/*
+ignore.*.tfvars
+
+# IDE specific
+.idea/
+.vscode/
+
+# Project Specific
+/logo/
+/favicon/
+DEVNOTES
+tmp/
+dev*.json
+
+# Python Specific
+.venv/
+__pycache__/
+*.pyc
+build/
+dist/
+*.egg-info/
+
+# Logs and Output
+*.log
+passage.json
+questions.txt
+verification_error.txt
+error_output.txt
+
+# Doc Specific
+**/reference/api/*

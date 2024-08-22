@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<meta property='og:title' content='OpenFactCheck: A Unified Framework for Factuality Evaluation of LLMs' />
+<meta property='og:image' content='' />
+<meta property='og:description' content='' />
+<meta property='og:url' content='https://github.com/hasaniqbal777/openfactcheck' />
+<meta property='og:image:width' content='1200' />
+<meta property='og:image:height' content='663' />
+<!-- TYPE BELOW IS PROBABLY: 'website' or 'article' or look on https://ogp.me/#types -->
+<meta property="og:type" content='website' />
+
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-257CHSRQ00"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-257CHSRQ00');
+  </script>
+  <meta charset="utf-8">
+  <meta name="description" content="OpenFactCheck: A Unified Framework for Factuality Evaluation of LLMs">
+  <meta name="keywords" content="OpenFactCheck: A Unified Framework for Factuality Evaluation of LLMs">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenFactCheck: A Unified Framework for Factuality Evaluation of LLMs</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/tab_gallery.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+  <link rel="stylesheet" href="juxtapose/css/juxtapose.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="./static/js/magnifier.js"></script>
+  <link href="https://fonts.cdnfonts.com/css/menlo" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/image_card_fader.css">
+  <link rel="stylesheet" href="./static/css/image_card_slider.css">
+
+</head>
+
+<style>
+  @import url('https://fonts.cdnfonts.com/css/menlo');
+</style>
+
+
+<body>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <!-- Publication Title and Authors -->
+            <h1 class="title is-2 publication-title">OpenFactCheck: A Unified Framework for Factuality Evaluation of
+              LLMs</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=fP77klEAAAAJ&hl">Hasan Iqbal</a><sup> 1,*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=dciz7yMAAAAJ&hl">Yuxia Wang</a><sup> 1,*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=F6nm6awAAAAJ">Minghan Wang</a><sup> 2</sup>,
+              </span>
+              <span class="author-block">
+                <a>Georgi Georgiev</a><sup> 3</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=eMC-gQUAAAAJ&hl">Jiahui Geng</a><sup> 1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=DfXsKZ4AAAAJ">Preslav Nakov</a><sup> 1</sup>
+              </span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1 </sup>Mohamed bin Zayed University of AI, </span>
+              <span class="author-block"><sup>2 </sup>Monash University, </span>
+              <span class="author-block"><sup>3 </sup>Sofia University</span>
+              <br>
+              <span class="author-block"><sup>*</sup>Equal contribution</span>
+            </div>
+            <div class="column has-text-centered">
+
+              <!-- Publication Links -->
+              <div class="publication-links">
+                <!-- ArXiv PDF link -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/pdf/2405.05583" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>Main Paper</span>
+                  </a>
+
+                  <!-- PDF link -->
+                  <span class="link-block">
+                    <a href="static/paper/EMNLP_Demo_2024_OpenFactCheck.pdf" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                      </span>
+                      <span>Demo Paper</span>
+                    </a>
+                  </span>
+
+                  <!-- Code link -->
+                  <span class="link-block">
+                    <a href="https://github.com/hasaniqbal777/openfactcheck"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fab fa-github"></i>
+                      </span>
+                      <span>Code</span>
+                    </a>
+                  </span>
+
+                  <!-- Documentation link -->
+                  <span class="link-block">
+                    <a href="https://openfactcheck.readthedocs.io/en/stable/"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fas fa-book"></i>
+                      </span>
+                      <span>Docs</span>
+                    </a>
+                  </span>
+
+                  <!-- Video link -->
+                  <span class="link-block">
+                    <a href="https://youtu.be/-i9VKL0HleI?si=MJg9LIP7U-AAS07e"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fab fa-youtube"></i>
+                      </span>
+                      <span>Video</span>
+                    </a>
+                  </span>
+
+                  <!-- Hugging Face link -->
+                  <span class="link-block
+                  ">
+                    <a href="https://huggingface.co/spaces/hasaniqbal777/OpenFactCheck"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fas fa-rocket"></i>
+                      </span>
+                      <span>Web App</span>
+                    </a>
+
+                    <!-- BibTex link -->
+                    <span class="link-block">
+                      <a href="#bibtex" class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                          <i class="ai ai-obp"></i>
+                        </span>
+                        <span>BibTex</span>
+                      </a>
+                    </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero is-light is-small">
+    <div class="hero-body">
+      <div class="container is-max-desktop has-text-centered">
+        <!-- Visual Effects. -->
+        <div class="column">
+          <div style="text-align:center;">
+          </div>
+        </div>
+        <h2 class="title is-centered has-text-justified">Abstract</h2>
+        <div class="container is-max-desktop">
+          <p align="justify">
+            The increased use of large language models (LLMs) across a variety of real-world applications calls for
+            automatic tools to check the factual accuracy of their outputs, as LLMs often hallucinate. This is difficult
+            as it requires assessing the factuality of free-form open-domain responses. While there has been a lot of
+            research on this topic, different papers use different evaluation benchmarks and measures, which makes them
+            hard to compare and hampers future progress. To mitigate these issues, we developed
+            <strong>OpenFactCheck</strong>, a unified framework, with three modules:
+            <em>(i) Response Evaluator</em>, which allows users to easily customize an automatic fact-checking system
+            and to assess the factuality of all claims in an input document using that system,
+            <em>(ii) LLM Evaluator</em>, which assesses the overall factuality of an LLM, and
+            <em>(iii) Fact Checker Evaluator</em>, a module to evaluate automatic fact-checking systems.
+            OpenFactCheck is open-sourced and publicly released as a Python library and also as a web service.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+
+    <!--/ Matting. -->
+    <div class="container is-max-desktop">
+
+      <!-- Latent space editing applications -->
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <div class="content has-text-centered">
+            <img src="./static/images/overview.png" alt="Overview of OpenFactCheck">
+            <br><br>
+            <p align="justify"><strong>Overview of OpenFactCheck:</strong> OpenFactCheck demo system for LLM factuality
+              evaluation with three modules.
+              <span style="color:green;"><strong>ResponseEvaluator:</strong></span> a customized fact-checker to
+              identify factual errors given text inputs.
+              <span style="color:orange;"><strong>LLMEvaluator:</strong></span> an LLM factuality evaluator to assess
+              the LLM factual ability from different aspects and then to produce a report to illustrate its weaknesses
+              and strengths.
+              <span style="color:purple;"><strong>CheckerEvaluator:</strong></span> a fact-checker evaluator and
+              leaderboard to encourage the development of advanced checkers in terms of performance, latency, and costs.
+              <br><br>
+              The design of OpenFactCheck emphasizes two principles: <em>(i)</em> customizability and extensibility for
+              both users
+              and developers, and <em>(ii)</em> compatibility with existing methods and datasets.
+            </p>
+          </div>
+
+          <hr>
+
+          <div class="content has-text-justified">
+            <p>
+              Details of the three modules of OpenFactCheck are as follows:
+            <h3>Response Evaluator</h3>
+            <p><strong>ResponseEvaluator</strong> allows users to customize a fact-checking system by selecting a claim
+              processor, a retriever, and a verifier in web pages. The current version supports the following
+              fact-checking systems:
+              <a href="https://arxiv.org/pdf/2210.08726">RARR</a>,
+              <a href="https://arxiv.org/pdf/2307.13528">FacTool</a> and
+              <a href="https://arxiv.org/pdf/2311.09000">FactCheckGPT</a>.
+            <p align="center">
+
+              <img src="./static/images/solvers.png" alt="Response Evaluator">
+            </p>
+            <p>We consolidate various fact-checking systems into a three-step process, encapsulated by three classes:
+              <code>claim_processor</code>, <code>retriever</code>, and <code>verifier</code>, as surveyed in <a
+                href="https://arxiv.org/pdf/2402.02420v2">Wang, 2024</a>. These classes are instantiated and
+              sequentially connected to form a pipeline that addresses the following tasks:
+            </p>
+            <ul>
+              <li>Breaking down a document into individual claims</li>
+              <li>Gathering pertinent evidence for each claim</li>
+              <li>Evaluating the veracity of each claim based on the evidence provided</li>
+            </ul>
+            <p>This sequence of tasks is referred to as <code>solvers</code>.
+
+            <p>The implementation of a task solver can be flexible, just ensuring that the input and the output are
+              aligned with the abstract class definitions. For example, evidence can be retrieved by calling SerpAPI or
+              by searching Wikipedia using BM25, but we must return a list of relevant passages given an input claim.
+            </p>
+
+            <p>Moreover, task solvers in our pipeline are not hard-coded but can be configured through a <em>YAML</em>
+              configuration file. Thus, users can combine task-solver implementations from different systems (e.g.,
+              using FactCheckGPT's claim processor, RARR's retriever, and FactOOL's verifier) and start the verification
+              from any step. For example, users can start from the step of retrieval when the input does not need
+              decomposition.</p>
+            </p>
+
+            <h3>LLM Evaluator</h3>
+            <p>We observed that studies assessing language models' factuality or evaluating whether the methods are
+              effective to mitigate model hallucinations use different datasets and metrics. This makes it difficult to
+              compare, in the same conditions, the factuality of different models as well as to compare the
+              effectiveness of different factuality enhancement approaches.</p>
+            <p>Moreover, a lot of prior work applied datasets such as
+              <a href="https://arxiv.org/pdf/2009.03300">MMLU</a>,
+              <a href="https://arxiv.org/pdf/2101.02235">StrategyQA</a>, and
+              <a href="https://arxiv.org/pdf/1809.09600">HotpotQA</a> to evaluate model's factuality. These
+              datasets tend to focus on assessing the general performance, rather than factuality.
+            </p>
+            <p>To this end, we first collect a dataset <em>FactQA</em> by gathering factual questions of existing
+              datasets that are curated to probe diverse factual errors and span across a spectrum of domains, to fairly
+              evaluate LLMs' factuality under the same criteria.</p>
+            <p>We collected factual questions from seven commonly-used corpora that is collected deliberately to assess
+              LLM's factuality, including
+              <a href="https://arxiv.org/pdf/2305.13534">Snowball,
+                <a href="https://arxiv.org/pdf/2305.18153">SelfAware</a>,
+                <a href="https://arxiv.org/pdf/2310.03214">FreshQA</a>,
+                <a href="https://arxiv.org/pdf/2307.13528">FacTool</a>,
+                <a href="https://arxiv.org/pdf/2310.00741">FELM-WK</a>,
+                <a href="https://arxiv.org/pdf/2311.09000">FactCheckGPT</a>, and
+                <a href="https://arxiv.org/pdf/2305.14251">FactScoreBio</a>,
+                a total of 6,480 examples shown in the table below.
+            </p>
+
+            <div class="table-responsive">
+              <table id="tab:dataset-statistics" class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Dataset &darr;</th>
+                    <th scope="col">The Ability to Evaluate</th>
+                    <th scope="col">Domain</th>
+                    <th scope="col">Error</th>
+                    <th scope="col">Size</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Snowball</strong></td>
+                    <td>Snowballing hallucination when model immediately output</td>
+                    <td>Math, history, graph search</td>
+                    <td>Type 2</td>
+                    <td>1,500</td>
+                  </tr>
+                  <tr>
+                    <td><strong>SelfAware</strong></td>
+                    <td>Understand their own limitations on the unknowns</td>
+                    <td>Biology, philosophy, psychology, history</td>
+                    <td>Type 1,3</td>
+                    <td>3,369</td>
+                  </tr>
+                  <tr>
+                    <td><strong>FreshQA</strong></td>
+                    <td>Answer questions changing fast over time or with false premises</td>
+                    <td>Sports, entertainment, history, technology</td>
+                    <td>Type 3</td>
+                    <td>600</td>
+                  </tr>
+                  <tr>
+                    <td><strong>FactOOLQA</strong></td>
+                    <td>Respond to knowledge-based questions</td>
+                    <td>History, geography, biology, science</td>
+                    <td>Type 1</td>
+                    <td>50</td>
+                  </tr>
+                  <tr>
+                    <td><strong>FELm</strong></td>
+                    <td>Answer world-knowledge questions</td>
+                    <td>History, biology, geography, sports</td>
+                    <td>Type 1</td>
+                    <td>184</td>
+                  </tr>
+                  <tr>
+                    <td><strong>FactCheckBench</strong></td>
+                    <td>Answer open-domain, false-premise questions</td>
+                    <td>Technology, history, science, sports</td>
+                    <td>Type 1,2</td>
+                    <td>94</td>
+                  </tr>
+                  <tr>
+                    <td><strong>FactScoreBio</strong></td>
+                    <td>Generate detailed biographies</td>
+                    <td>Biography</td>
+                    <td>Type 1,3</td>
+                    <td>683</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="highlight" style="border-right:1px solid; border-color: #dbdbdb;">
+                    <td><strong>FactQA (Ours)</strong></td>
+                    <td>LLM factuality against world knowledge</td>
+                    <td>482 domains, top20 accounts for 70%</td>
+                    <td>Type 1,2,3</td>
+                    <td>6,480</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>For questions that can be answered by Yes/No or have a short gold answer, we perform exact matching
+              between the model responses and the gold standard answer to judge whether the response is factually
+              correct or not, and then to calculate accuracy, such as for <em>Snowball</em> and <em>SelfAware</em>.</p>
+
+            <p>For <em>FreshQA</em>, we use the
+              <a href="https://arxiv.org/pdf/2310.03214">FreshEval</a> method proposed in to evaluate the correctness of
+              model's responses.
+            </p>
+
+            <p>For open-domain questions from the other four datasets with free-form and long responses, there are no
+              gold standard answers. We use automatic fact-checking systems to judge the correctness of claims and
+              obtain the percentage of true claims as the accuracy for a response.</p>
+
+            <h3>Checker Evaluator</h3>
+            <p>Automatic fact-checking systems aim to identify whether a claim or a document is true or false, but the
+              results are not necessarily correct. To assess the accuracy of automatic fact-checkers, we gather four LLM
+              factuality benchmarks with human-annotated factual labels for three levels of granularity text:
+              claims/segments/documents given (question, ChatGPT response) pairs, including FactOOLQA, FELmWK,
+              FactCheckBench, and HALUEval as shown in the following table. We refer to them as FactBench.</p>
+            <div class="table-responsive">
+              <table id="tab:factbench-statistics" class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Dataset &darr;</th>
+                    <th scope="col">#True</th>
+                    <th scope="col">#False</th>
+                    <th scope="col">#Unknown</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>FactOOLQA</td>
+                    <td>177</td>
+                    <td>56</td>
+                    <td>0</td>
+                    <td>233</td>
+                  </tr>
+                  <tr>
+                    <td>FELmWK</td>
+                    <td>385</td>
+                    <td>147</td>
+                    <td>0</td>
+                    <td>532</td>
+                  </tr>
+                  <tr>
+                    <td>FactCheckBench</td>
+                    <td>472</td>
+                    <td>159</td>
+                    <td>47</td>
+                    <td>678</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="highlight" style="border-right:1px solid; border-color: #dbdbdb;">
+                    <td>FactBench (Ours)</td>
+                    <td>3,692</td>
+                    <td>815</td>
+                    <td>0</td>
+                    <td>4,507</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>We use precision, recall, and F1-score with respect to the <em>True</em> or <em>False</em> claim/document
+              to evaluate the effectiveness of fact-checking systems.</p>
+
+
+            <h3>OpenFactCheck Python Library</h3>
+            <p>OpenFactCheck is open-sourced and publicly released as a Python library. The library is designed to be
+              user-friendly and easy to use. It provides a set of APIs for users to interact with the three modules
+              mentioned above. The library is available on <a href="https://pypi.org/project/openfactcheck/">PyPI</a>
+              and can be installed using the following
+              command:</p>
+            <pre><code>pip install openfactcheck</code></pre>
+            <p>For more information on how to use the library, please refer to the library's <a
+                href="https://openfactcheck.readthedocs.io/en/stable/">documentation</a>.</p>
+
+            <h3>OpenFactCheck Web Dashboard</h3>
+            <p>OpenFactCheck is also available as a web service. Users can access the web interface by visiting the
+              following link: <a href="https://huggingface.co/spaces/hasaniqbal777/OpenFactCheck">OpenFactCheck Web
+                Interface</a>. The web interface
+              provides a user-friendly interface for users to interact with the three modules mentioned above as shown
+              in the following figure.</p>
+            <p align="center">
+              <img src="./static/images/web_interface.png" alt="OpenFactCheck Web Interface">
+            </p>
+            <p><em>OpenFactCheck Dashboard:</em></p>
+            <ul>
+              <li>(a) is the navigation bar.</li>
+              <li>(b) a claim processor breaking down the input into two atomic claims. The retriever
+                collected 16 pieces of evidence, and the verifier assessed each claim individually, with one true and
+                one false, resulting 50% credibility overall.</li>
+              <li>(c) shows the user information required before uploading LLM responses or
+                verification results to LLMEvaluator and FactCheckerEvaluator.</li>
+              <li>(d) shows the functions of downloading and uploading.</li>
+              <li>(e) and
+                (f) exhibit the LLM and FactChecker Evaluation report
+                respectively.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+      <hr>
+
+      <section class="section">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3">Contributions</h2>
+              <div class="content has-text-justified">
+                <p>
+                <ol>
+                  <li> <b>OpenFactCheck</b>: We present a unified framework for factuality evaluation of LLMs, which
+                    includes three modules: Response Evaluator, LLM Evaluator, and Fact Checker Evaluator. OpenFactCheck
+                    is open-sourced and publicly released as a Python library and a web service.</li>
+                  <li> <b>FactQA</b>: We introduce a new dataset, FactQA, for evaluating the factuality of LLMs. FactQA
+                    contains 6,480 examples from seven datasets, covering 482 domains, and three types of factual
+                    errors.
+                  </li>
+                  <li> <b>FactBench</b>: We collect four LLM factuality benchmarks with human-annotated factual labels
+                    for three levels of granularity text: claims/segments/documents given (question, ChatGPT response)
+                    pairs.</li>
+                  <li> <b>OpenFactCheck Python Library</b>: We provide a Python library for OpenFactCheck, which is
+                    available on PyPI and can be installed using the command <code>pip install openfactcheck</code>.
+                  </li>
+                  <li> <b>OpenFactCheck Web Dashboard</b>: We provide a web service for OpenFactCheck, which is
+                    available
+                    at <a href="https://huggingface.co/spaces/hasaniqbal777/OpenFactCheck">OpenFactCheck Web
+                      Interface</a>.
+                  </li>
+                </ol>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <h2 class="title is-centered has-text-justified">Conclusion</h2>
+      <div class="content has-text-justified">
+        <p>We implemented a unified, easy-to-use, and extensible framework <strong>OpenFactCheck</strong>. It is
+          accessible by both a Python library and a web service, supporting the customization and evaluation of
+          automatic fact-checking systems and LLM factuality evaluation.</p>
+        <p>Specifically, OpenFactCheck allows general users to check whether a claim and a document are factual or not,
+          and also facilitates LLM practitioners and developers to effectively and efficiently evaluate the factuality
+          of their LLMs from various perspectives, and to assess the accuracy of automatic fact-checking systems.</p>
+        <p>
+          In the future, we will continue to integrate new techniques, features, and evaluation benchmarks to
+          OpenFactCheck to facilitate the research progress of LLM fact-checking.
+        </p>
+        <p>For additional details about OpenFactCheck, dataset, results, please refer to our main <a
+            href="https://arxiv.org/pdf/2405.05583">paper</a> and demo <a
+            href="static/paper/EMNLP_Demo_2024_OpenFactCheck.pdf">paper</a>. Also check out the repository on <a
+            href="https://github.com/hasaniqbal777/openfactcheck">GitHub</a> and the <a
+            href="https://openfactcheck.readthedocs.io/en/stable/">documentation</a> for more information.</p>
+
+      </div>
+
+
+      <hr>
+      <br />
+
+      <h3 class="title is-4 has-text-justified">Contact</h3>
+      <div class="content has-text-justified">
+        <p>For any query related to our work, contact <a href="mailto:hasan.iqbal@mzbzuai.ac.ae">Hasan Iqbal</a> or
+          <a href="mailto:yuxia.wang@mbzuai.ac.ae">Yuxia Wang</a>.
+        </p>
+
+        <br />
+        <br />
+
+
+        <h2 class="title is-4 has-text-justified"><a id="bibtex">BibTeX</a></h2>
+        <div class="container content has-text-justified">
+          <pre><code>
+            @article{wang2024openfactcheck,
+              title={OpenFactCheck: A Unified Framework for Factuality Evaluation of LLMs},
+              author={Wang, Yuxia and Wang, Minghan and Iqbal, Hasan and Georgiev, Georgi and Geng, Jiahui and Nakov, Preslav},
+              journal={arXiv preprint arXiv:2405.05583},
+              year={2024}
+            }
+          </code></pre>
+        </div>
+
+
+        </br>
+
+
+        <footer style="background-color:#555555; color:white; padding:20px; text-align:center;">
+          <div style="background-color:#555555; color:#f0f0f0; padding:10px;">
+            Website adapted from the following <a href="https://mingukkang.github.io/GigaGAN/"
+              style="color:#add8e6;">source code.</a>
+          </div>
+        </footer>
+
+
+
+        <script src="juxtapose/js/juxtapose.js"></script>
+
+
+        <script>
+          var slider;
+          let origOptions = {
+            "makeResponsive": true,
+            "showLabels": true,
+            "mode": "horizontal",
+            "showCredits": true,
+            "animate": true,
+            "startingPosition": "50"
+          };
+
+          const juxtaposeSelector = "#juxtapose-embed";
+          const transientSelector = "#juxtapose-hidden";
+
+          inputImage.src = "./static/images/".concat(name, "_input.jpg")
+          outputImage.src = "./static/images/".concat(name, "_output.jpg")
+
+          let images = [inputImage, outputImage];
+          let options = slider.options;
+          options.callback = function (obj) {
+            var newNode = document.getElementById(obj.selector.substring(1));
+            var oldNode = document.getElementById(juxtaposeSelector.substring(1));
+            console.log(obj.selector.substring(1));
+            console.log(newNode.children[0]);
+            oldNode.replaceChild(newNode.children[0], oldNode.children[0]);
+            //newNode.removeChild(newNode.children[0]);
+
+          };
+
+          slider = new juxtapose.JXSlider(transientSelector, images, options);
+
+
+
+
+          (function () {
+            slider = new juxtapose.JXSlider(
+              juxtaposeSelector, origImages, origOptions);
+            //document.getElementById("left-button").onclick = replaceLeft;
+            //document.getElementById("right-button").onclick = replaceRight;
+          })();
+          // Get the image text
+          var imgText = document.getElementById("imgtext");
+          // Use the same src in the expanded image as the image being clicked on from the grid
+          // expandImg.src = imgs.src;
+          // Use the value of the alt attribute of the clickable image as text inside the expanded image
+          imgText.innerHTML = name;
+          // Show the container element (hidden with CSS)
+          // expandImg.parentElement.style.display = "block";
+
+          $(".flip-card").click(function () {
+            console.log("fading in")
+            div_back = $(this).children().children()[1]
+            div_front = $(this).children().children()[0]
+            // console.log($(this).children("div.flip-card-back"))
+            console.log(div_back)
+            $(div_front).addClass("out");
+            $(div_front).removeClass("in");
+
+            $(div_back).addClass("in");
+            $(div_back).removeClass("out");
+
+          });
+
+          $(".flip-card").mouseleave(function () {
+            console.log("fading in")
+            div_back = $(this).children().children()[1]
+            div_front = $(this).children().children()[0]
+            // console.log($(this).children("div.flip-card-back"))
+            console.log(div_back)
+            $(div_front).addClass("in");
+            $(div_front).removeClass("out");
+
+            $(div_back).addClass("out");
+            $(div_back).removeClass("in");
+
+          });
+
+        </script>
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+          integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+          crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+        <script>hljs.highlightAll();</script>
+
+</body>
+
+</html>
