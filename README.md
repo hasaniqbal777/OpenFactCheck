@@ -35,7 +35,7 @@ pinned: false
     <img src="https://img.shields.io/pypi/v/openfactcheck.svg" alt="PyPI Latest Release">
 </a>
 <a href="https://arxiv.org/abs/2405.05583"><img src="https://img.shields.io/badge/arXiv-2405.05583-B31B1B" alt="arXiv"></a>
-<a href="https://zenodo.org/doi/10.5281/zenodo.13358664"><img src="https://zenodo.org/badge/829374815.svg" alt="DOI"></a>
+<a href="https://zenodo.org/doi/10.5281/zenodo.13358664"><img src="https://img.shields.io/badge/DOI-10.5281/zenodo.13358664-blue" alt="DOI"></a>
 </p>
 
 ---
