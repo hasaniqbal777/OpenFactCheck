@@ -38,35 +38,3 @@ def metric_card(
     """
     st.markdown(html_str, unsafe_allow_html=True)
     st.markdown('######')
-
-def footer(text: str) -> None:
-
-    style = f"""
-    <style>
-        #MainMenu {{visibility: hidden;}}
-        footer {{visibility: hidden;}}
-        .stApp {{ bottom: 52px; }}
-    </style>
-    """
-
-    st.markdown(style, unsafe_allow_html=True)
-
-    html_str = f"""
-    <div style='position: fixed;
-                left: 0;
-                bottom: 0;
-                margin: 0 0 0 0;
-                width: 100%;
-                color: black;
-                text-align: center;
-                height: auto;
-                opacity: 1'>
-        <hr style='display: block;
-                   margin: 8px 8px 8px 8px;
-                   border-style: inset;
-                   border-width: 1px' />
-        <p>{text}</p>
-    </div>
-    """
-
-    st.markdown(html_str, unsafe_allow_html=True)

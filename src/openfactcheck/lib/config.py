@@ -9,6 +9,7 @@ from collections import namedtuple
 from importlib import resources as pkg_resources
 
 from openfactcheck.lib.logger import logger, set_logger_level
+from openfactcheck.lib.utils import detect_streamlit
 from openfactcheck.errors import ConfigValidationError
 from openfactcheck import templates as solver_config_templates_dir
 from openfactcheck import solvers as solver_templates_dir
@@ -70,7 +71,7 @@ class OpenFactCheckConfig:
         # Define namedtuple structures
         Secrets = namedtuple("Secrets", ["openai_api_key", 
                                          "serper_api_key", 
-                                         "azure_search_key"])
+                                         "scraper_api_key"])
         
         # Define Attributes
         self.config = None
@@ -150,18 +151,18 @@ class OpenFactCheckConfig:
             if 'secrets' in self.config:
                 self.secrets = Secrets(openai_api_key=self.config['secrets']['openai_api_key'],
                                         serper_api_key=self.config['secrets']['serper_api_key'],
-                                        azure_search_key=self.config['secrets']['azure_search_key'])
+                                        scraper_api_key=self.config['secrets']['scraper_api_key'])
             else:
                 self.logger.warning("No secrets found in the configuration file. Make sure to set the environment variables.")
-                self.secrets = Secrets(openai_api_key=None, serper_api_key=None, azure_search_key=None)
+                self.secrets = Secrets(openai_api_key=None, serper_api_key=None, scraper_api_key=None)
         
             # Initialize Environment Variables
             if self.secrets.openai_api_key:
                 os.environ['OPENAI_API_KEY'] = self.secrets.openai_api_key
             if self.secrets.serper_api_key:
                 os.environ['SERPER_API_KEY'] = self.secrets.serper_api_key
-            if self.secrets.azure_search_key:
-                os.environ['AZURE_SEARCH_KEY'] = self.secrets.azure_search_key
+            if self.secrets.scraper_api_key:
+                os.environ['SCRAPER_API_KEY'] = self.secrets.scraper_api_key
 
             # Initialize Verbose
             if 'verbose' in self.config:
@@ -172,8 +173,9 @@ class OpenFactCheckConfig:
                 self.verbose = "INFO"
                 set_logger_level(self.logger, "INFO")
 
-            # Validate Configuration
-            self.validate()
+            # Validate the configuration
+            if not detect_streamlit():
+                self.validate()
 
             # Disable Transformers and Datasets logging
             transformers.logging.set_verbosity_error()
@@ -218,9 +220,9 @@ class OpenFactCheckConfig:
         if 'SERPER_API_KEY' not in os.environ:
             self.logger.warning("SERPER_API_KEY environment variable not found.")
             raise ConfigValidationError("SERPER_API_KEY environment variable not found.")
-        if 'AZURE_SEARCH_KEY' not in os.environ:
-            self.logger.warning("AZURE_SEARCH_KEY environment variable not found.")
-            raise ConfigValidationError("AZURE_SEARCH_KEY environment variable not found.")
+        if 'SCRAPER_API_KEY' not in os.environ:
+            self.logger.warning("SCRAPER_API_KEY environment variable not found.")
+            raise ConfigValidationError("SCRAPER_API_KEY environment variable not found.")
 
         
     
