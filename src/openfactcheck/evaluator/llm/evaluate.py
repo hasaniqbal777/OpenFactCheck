@@ -5,7 +5,7 @@ import pandas as pd
 from importlib import resources as pkg_resources
 
 from openfactcheck import OpenFactCheck
-from openfactcheck.lib import logger
+from openfactcheck.utils.logging import get_logger
 from openfactcheck.evaluator.llm.evaluate_snowballing import SnowballingEvaluator
 from openfactcheck.evaluator.llm.evaluate_selfaware import SelfAwareEvaluator
 from openfactcheck.evaluator.llm.evaluate_freshqa import FreshQAEvaluator
@@ -13,6 +13,9 @@ from openfactcheck.evaluator.llm.evaluate_freetext import FreeTextEvaluator
 from openfactcheck.evaluator.llm.report import create_report
 
 from openfactcheck import data as data_dir
+
+# Get the logger
+logger = get_logger(__name__)
 
 # Import LLM Evaluation Dataset
 default_dataset_path = str(pkg_resources.files(data_dir))

@@ -5,8 +5,11 @@ from jinja2 import Environment, FileSystemLoader
 
 from importlib import resources as pkg_resources
 
-from openfactcheck.lib import logger
+from openfactcheck.utils.logging import get_logger
 from openfactcheck.templates import report as report_dir
+
+# Get the logger
+logger = get_logger(__name__)
 
 # Import latex template
 report_template_path = str(pkg_resources.files(report_dir) / "llm_evaluation_report.tex")

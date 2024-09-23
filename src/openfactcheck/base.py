@@ -3,9 +3,12 @@ import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from openfactcheck.lib import logger
+from openfactcheck.utils.logging import get_logger
 from openfactcheck.lib import OpenFactCheckConfig
 from openfactcheck.solver import SOLVER_REGISTRY, Solver
+
+# Get the logger
+logger = get_logger(__name__)
 
 if TYPE_CHECKING:
     from openfactcheck.evaluator.llm import LLMEvaluator

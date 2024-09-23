@@ -1,9 +1,11 @@
-import sys
 import os
 import importlib
 
-from openfactcheck.lib import logger
+from openfactcheck.utils.logging import get_logger
 from openfactcheck.state import FactCheckerState
+
+# Get the logger
+logger = get_logger(__name__)
 
 # Global solver registry
 SOLVER_REGISTRY = {}

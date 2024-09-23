@@ -1,4 +1,7 @@
-import logging
+from openfactcheck.utils.logging import get_logger
+
+# Get the logger
+logger = get_logger(__name__)
 
 class FactCheckerState:
     """

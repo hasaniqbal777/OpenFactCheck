@@ -8,7 +8,10 @@ from hashlib import md5
 import matplotlib.pyplot as plt
 
 from openfactcheck import OpenFactCheck
-from openfactcheck.lib import logger
+from openfactcheck.utils.logging import get_logger
+
+# Get the logger
+logger = get_logger(__name__)
 
 class FreeTextEvaluator():
     def __init__(self, ofc: OpenFactCheck):

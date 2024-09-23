@@ -5,9 +5,12 @@ import json
 import traceback
 from typing import Callable
 
-from openfactcheck.lib.logger import logger
+from openfactcheck.utils.logging import get_logger
 from openfactcheck.base import OpenFactCheck
 from openfactcheck.state import FactCheckerState
+
+# Get the logger
+logger = get_logger(__name__)
 
 class ResponseEvaluator:
     """
