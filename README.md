@@ -114,6 +114,13 @@ If you use OpenFactCheck in your research, please cite the following:
   year         = {2024}
 }
 
+@article{iqbal2024openfactcheck,
+  title        = {OpenFactCheck: A Unified Framework for Factuality Evaluation of LLMs},
+  author       = {Iqbal, Hasan and Wang, Yuxia and Wang, Minghan and Georgiev, Georgi and Geng, Jiahui and Gurevych, Iryna and Nakov, Preslav},
+  journal      = {arXiv preprint arXiv:2408.11832},
+  year         = {2024}
+}
+
 @software{hasan_iqbal_2024_13358665,
   author       = {Hasan Iqbal},
   title        = {hasaniqbal777/OpenFactCheck: v0.3.0},
