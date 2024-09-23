@@ -29,7 +29,7 @@ log_levels = {
     "critical": CRITICAL,
 }
 
-_default_log_level = logging.INFO
+_default_log_level = logging.WARNING
 
 
 class CustomStreamLoggingFormatter(logging.Formatter):
