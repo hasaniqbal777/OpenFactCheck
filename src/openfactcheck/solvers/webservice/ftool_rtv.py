@@ -5,11 +5,12 @@ from .factool_utils.chat_api import OpenAIChat
 from .factool_utils.search_api import GoogleSerperAPIWrapper
 from .factool_utils.prompt import QUERY_GENERATION_PROMPT
 
+
 @Solver.register("factool_retriever", "claims", "claims_with_evidences")
 class FactoolRetriever(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)
-        self.gpt_model = self.global_config.get("factool_gpt_model", "gpt-3.5-turbo")
+        self.gpt_model = self.global_config.get("factool_gpt_model", "gpt-4o")
         self.snippet_cnt = args.get("snippet_cnt", 10)
         self.gpt = OpenAIChat(self.gpt_model)
         self.query_prompt = QUERY_GENERATION_PROMPT
@@ -22,8 +23,8 @@ class FactoolRetriever(StandardTaskSolver):
         evidences = self.search_engine.run(queries)
         results = {}
         for query, claim, evidence in zip(queries, claims, evidences):
-            merged_query = ' '.join(query) if len(query) > 1 else str(query)
-            results[claim] = [(merged_query, x['content']) for x in evidence]
+            merged_query = " ".join(query) if query and len(query) > 1 else str(query) if query else ""
+            results[claim] = [(merged_query, x["content"]) for x in evidence]
         state.set(self.output_name, results)
         return True, state
 

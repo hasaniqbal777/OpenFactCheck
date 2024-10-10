@@ -18,16 +18,16 @@ from .factcheckgpt_utils.openai_api import gpt
 from .factcheckgpt_utils.prompt import QGEN_PROMPT, QGEN_PROMPT_FMT
 from .factcheckgpt_utils.data_util import save_txt, save_json
 
+
 @Solver.register("factcheckgpt_retriever", "claims", "claims_with_evidences")
 class FactCheckGPTRetriever(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)
-        self.model = self.global_config.get("factcheckgpt_model", "gpt-3.5-turbo")
+        self.model = self.global_config.get("factcheckgpt_model", "gpt-4o")
         self.num_retries = self.global_config.get("num_retries", 3)
         self.tokenizer = spacy.load("en_core_web_sm", disable=["ner", "tagger", "lemmatizer"])
         self.question_duplicate_model = CrossEncoder(
-            'navteca/quora-roberta-base',
-            device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+            "navteca/quora-roberta-base", device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         )
         self.passage_ranker = CrossEncoder(
             "cross-encoder/ms-marco-MiniLM-L-6-v2",
@@ -45,7 +45,7 @@ class FactCheckGPTRetriever(StandardTaskSolver):
         self.sentences_per_passage = args.get("sentences_per_passage", 5)
         self.max_passages_per_question = args.get("max_passages_per_question", 5)
         self.max_aggregated_evidences = args.get("max_aggregated_evidences", 5)
-        self.question_persist_path = args.get("question_persist_path", 'questions.txt')
+        self.question_persist_path = args.get("question_persist_path", "questions.txt")
         self.snippets_persist_path = args.get("snippets_persist_path", "passage.json")
 
     def __call__(self, state: FactCheckerState, *args, **kwargs):
@@ -53,7 +53,7 @@ class FactCheckGPTRetriever(StandardTaskSolver):
         claims_with_evidences = {}
         for i, claim in enumerate(claims):
             evidences = self.get_web_evidences_for_claim(claim)
-            claims_with_evidences[claim] = [(q, e['text']) for q, e in evidences['aggregated']]
+            claims_with_evidences[claim] = [(q, e["text"]) for q, e in evidences["aggregated"]]
         state.set(self.output_name, claims_with_evidences)
         return True, state
 
@@ -70,11 +70,9 @@ class FactCheckGPTRetriever(StandardTaskSolver):
         snippets = {}
         for question in questions:
             retrieved_passages = self.get_relevant_snippets(question)
-            snippets[question] = sorted(
-                retrieved_passages,
-                key=lambda x: x['retrieval_score'],
-                reverse=True
-            )[:self.max_passages_per_question]
+            snippets[question] = sorted(retrieved_passages, key=lambda x: x["retrieval_score"], reverse=True)[
+                : self.max_passages_per_question
+            ]
         save_json(snippets, self.snippets_persist_path)
         return snippets
 
@@ -111,7 +109,7 @@ class FactCheckGPTRetriever(StandardTaskSolver):
                 model=self.model,
                 system_role=self.qgen_system_role,
                 num_retries=self.num_retries,
-                temperature=self.qgen_temp
+                temperature=self.qgen_temp,
             )
             try:
                 cur_round_questions = set(eval(response))
@@ -183,8 +181,8 @@ class FactCheckGPTRetriever(StandardTaskSolver):
             return False
         return True
 
-    def search_google(self, query: str, num_web_pages: int = 10, timeout: int = 6, save_url: str = '') -> list[str]:
-        """Searches the query using Google. 
+    def search_google(self, query: str, num_web_pages: int = 10, timeout: int = 6, save_url: str = "") -> list[str]:
+        """Searches the query using Google.
         Args:
             query: Search query.
             num_web_pages: the number of web pages to request.
@@ -199,7 +197,7 @@ class FactCheckGPTRetriever(StandardTaskSolver):
         USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:65.0) Gecko/20100101 Firefox/65.0"
         # mobile user-agent
         MOBILE_USER_AGENT = "Mozilla/5.0 (Linux; Android 7.0; SM-G930V Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36"
-        headers = {'User-Agent': USER_AGENT}
+        headers = {"User-Agent": USER_AGENT}
 
         # set language
         # set the Google interface language, use &hl=XX
@@ -223,18 +221,18 @@ class FactCheckGPTRetriever(StandardTaskSolver):
 
         # save all url into a txt file
         if not save_url == "":
-            with open(save_url, 'w') as file:
+            with open(save_url, "w") as file:
                 for url in urls:
-                    file.write(url + '\n')
+                    file.write(url + "\n")
         return urls
 
     def chunk_text(
-            self,
-            text: str,
-            tokenizer,
-            sentences_per_passage: int = 5,
-            filter_sentence_len: int = 250,
-            sliding_distance: int = 2,
+        self,
+        text: str,
+        tokenizer,
+        sentences_per_passage: int = 5,
+        filter_sentence_len: int = 250,
+        sliding_distance: int = 2,
     ) -> list[str]:
         """Chunks text into passages using a sliding window.
 
@@ -261,15 +259,16 @@ class FactCheckGPTRetriever(StandardTaskSolver):
             ]
             for idx in range(0, len(sents), sliding_distance):
                 passages.append(
-                    (" ".join(sents[idx: idx + sentences_per_passage]), idx, idx + sentences_per_passage - 1))
+                    (" ".join(sents[idx : idx + sentences_per_passage]), idx, idx + sentences_per_passage - 1)
+                )
         except UnicodeEncodeError as _:  # Sometimes run into Unicode error when tokenizing.
             print("Unicode error when using Spacy. Skipping text.")
 
         return passages
 
     def get_relevant_snippets(
-            self,
-            query,
+        self,
+        query,
     ):
         search_results = self.search_google(query, timeout=self.search_timeout)
 
@@ -279,11 +278,9 @@ class FactCheckGPTRetriever(StandardTaskSolver):
         scraped_results = [r for r in scraped_results if r[0] and ".pdf" not in r[1]]
         # print("Num Bing Search Results: ", len(scraped_results))
         retrieved_passages = list()
-        for webtext, url in scraped_results[:self.max_search_results_per_query]:
+        for webtext, url in scraped_results[: self.max_search_results_per_query]:
             passages = self.chunk_text(
-                text=webtext,
-                tokenizer=self.tokenizer,
-                sentences_per_passage=self.sentences_per_passage
+                text=webtext, tokenizer=self.tokenizer, sentences_per_passage=self.sentences_per_passage
             )
             if not passages:
                 continue
@@ -305,7 +302,7 @@ class FactCheckGPTRetriever(StandardTaskSolver):
                             overlap = True
                             break
 
-                # Only consider top non-overlapping relevant passages to maximise for information 
+                # Only consider top non-overlapping relevant passages to maximise for information
                 if not overlap:
                     relevant_items.append(deepcopy(passage_item))
                     retrieved_passages.append(

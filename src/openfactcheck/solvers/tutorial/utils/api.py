@@ -9,32 +9,36 @@ from typing import Any, Dict, List, Tuple
 # OpenAI ChatGPT and davicci-text
 # ----------------------------------------------------------
 client = None
+
+
 def init_client():
     global client
     if client is None:
-        if openai.api_key is None and 'OPENAI_API_KEY' not in os.environ:
+        if openai.api_key is None and "OPENAI_API_KEY" not in os.environ:
             print("openai_key not presented, delay to initialize.")
             return
         client = OpenAI()
 
+
 def chatgpt(user_input):
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=[
-                {"role": "system", "content": "You are a NLP expert that is good at fact checking"},
-                {"role": "user", "content": user_input},
-        ]
+            {"role": "system", "content": "You are a NLP expert that is good at fact checking"},
+            {"role": "user", "content": user_input},
+        ],
     )
 
-    result = ''
+    result = ""
     for choice in response.choices:
         result += choice.message.content
 
     return result
 
+
 def davinci(prompt):
     # Set up the model and prompt
-    model_engine = "gpt-3.5-turbo-instruct"
+    model_engine = "gpt-4o-instruct"
 
     # Generate a response
     completion = client.completions.create(
@@ -49,11 +53,13 @@ def davinci(prompt):
     response = completion.choices[0].text
     return response
 
+
 # ----------------------------------------------------------
 # Bing Search
 # ----------------------------------------------------------
 BING_SEARCH_URL = "https://api.bing.microsoft.com/v7.0/search/"
-SUBSCRIPTION_KEY = "" # fill your bing api key
+SUBSCRIPTION_KEY = ""  # fill your bing api key
+
 
 def search_bing(query: str, timeout: float = 3) -> List[str]:
     """Searches the query using Bing.
@@ -63,7 +69,7 @@ def search_bing(query: str, timeout: float = 3) -> List[str]:
     Returns:
         search_results: A list of the top URLs relevant to the query.
     """
-    
+
     headers = {"Ocp-Apim-Subscription-Key": SUBSCRIPTION_KEY}
     params = {"q": query, "textDecorations": True, "textFormat": "HTML"}
     response = requests.get(BING_SEARCH_URL, headers=headers, params=params, timeout=timeout)
@@ -73,7 +79,8 @@ def search_bing(query: str, timeout: float = 3) -> List[str]:
     search_results = [r["url"] for r in response["webPages"]["value"]]
     return search_results
 
-# Test Bing search 
+
+# Test Bing search
 # search_results = search_bing("What are the different awards that Preslav Nakov has received")
 # print(search_results)
 
@@ -81,7 +88,7 @@ def search_bing(query: str, timeout: float = 3) -> List[str]:
 # ----------------------------------------------------------
 # Google Search
 # ----------------------------------------------------------
-def search_google(query: str, num_web_pages: int = 10, save_url: str = '') -> List[str]:
+def search_google(query: str, num_web_pages: int = 10, save_url: str = "") -> List[str]:
     """Searches the query using Google.
     Args:
         query: Search query.
@@ -97,13 +104,13 @@ def search_google(query: str, num_web_pages: int = 10, save_url: str = '') -> Li
     USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:65.0) Gecko/20100101 Firefox/65.0"
     # mobile user-agent
     MOBILE_USER_AGENT = "Mozilla/5.0 (Linux; Android 7.0; SM-G930V Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36"
-    headers = {'User-Agent': USER_AGENT}
-    
+    headers = {"User-Agent": USER_AGENT}
+
     # set language
     # set the Google interface language, use &hl=XX
     # set the preferred language of the search results, use &lr=lang_XX
     # set language as en, otherwise it will return many translation web pages to Arabic that can't be opened correctly.
-    lang = "en" 
+    lang = "en"
 
     # scrape google results
     urls = []
@@ -121,10 +128,11 @@ def search_google(query: str, num_web_pages: int = 10, save_url: str = '') -> Li
 
     # save all url into a txt file
     if not save_url == "":
-        with open(save_url, 'w') as file:
+        with open(save_url, "w") as file:
             for url in urls:
-                file.write(url + '\n')
+                file.write(url + "\n")
     return urls
+
 
 # Test google search
 # query = "Google Company Introduction"

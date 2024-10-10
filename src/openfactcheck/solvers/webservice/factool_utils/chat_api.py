@@ -21,53 +21,54 @@ import re
 # env
 # openai.api_key = factool_env_config.openai_api_key
 
-class OpenAIChat():
+
+class OpenAIChat:
     def __init__(
-            self,
-            model_name='gpt-3.5-turbo',
-            max_tokens=2500,
-            temperature=0,
-            top_p=1,
-            request_timeout=120,
+        self,
+        model_name="gpt-4o",
+        max_tokens=2500,
+        temperature=0,
+        top_p=1,
+        request_timeout=120,
     ):
-        if 'gpt' not in model_name:
+        if "gpt" not in model_name:
             openai.api_base = "http://localhost:8000/v1"
         else:
             # openai.api_base = "https://api.openai.com/v1"
             openai.api_key = os.environ.get("OPENAI_API_KEY", None)
             assert openai.api_key is not None, "Please set the OPENAI_API_KEY environment variable."
-            assert openai.api_key != '', "Please set the OPENAI_API_KEY environment variable."
+            assert openai.api_key != "", "Please set the OPENAI_API_KEY environment variable."
         self.client = AsyncOpenAI()
 
         self.config = {
-            'model_name': model_name,
-            'max_tokens': max_tokens,
-            'temperature': temperature,
-            'top_p': top_p,
-            'request_timeout': request_timeout,
+            "model_name": model_name,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "top_p": top_p,
+            "request_timeout": request_timeout,
         }
 
     def extract_list_from_string(self, input_string):
-        # pattern = r'\[.*\]'  
+        # pattern = r'\[.*\]'
         # result = re.search(pattern, input_string)
         # if result:
         #     return result.group()
         # else:
         #     return None
-        start_index = input_string.find('[')
-        end_index = input_string.rfind(']')
+        start_index = input_string.find("[")
+        end_index = input_string.rfind("]")
 
         if start_index != -1 and end_index != -1 and start_index < end_index:
-            return input_string[start_index:end_index + 1]
+            return input_string[start_index : end_index + 1]
         else:
             return None
 
     def extract_dict_from_string(self, input_string):
-        start_index = input_string.find('{')
-        end_index = input_string.rfind('}')
+        start_index = input_string.find("{")
+        end_index = input_string.rfind("}")
 
         if start_index != -1 and end_index != -1 and start_index < end_index:
-            return input_string[start_index:end_index + 1]
+            return input_string[start_index : end_index + 1]
         else:
             return None
 
@@ -81,7 +82,7 @@ class OpenAIChat():
                 return None
             return output_eval
         except:
-            '''
+            """
             if(expected_type == List):
                 valid_output = self.extract_list_from_string(output)
                 output_eval = ast.literal_eval(valid_output)
@@ -94,15 +95,15 @@ class OpenAIChat():
                 if not isinstance(output_eval, expected_type):
                     return None
                 return output_eval
-            '''
+            """
             return None
 
     async def dispatch_openai_requests(
-            self,
-            messages_list,
+        self,
+        messages_list,
     ) -> list[str]:
         """Dispatches requests to OpenAI API asynchronously.
-        
+
         Args:
             messages_list: List of messages to be sent to OpenAI ChatCompletion API.
         Returns:
@@ -113,11 +114,11 @@ class OpenAIChat():
             for _ in range(retry):
                 try:
                     response = await self.client.chat.completions.create(
-                        model=self.config['model_name'],
+                        model=self.config["model_name"],
                         messages=messages,
-                        max_tokens=self.config['max_tokens'],
-                        temperature=self.config['temperature'],
-                        top_p=self.config['top_p']
+                        max_tokens=self.config["max_tokens"],
+                        temperature=self.config["temperature"],
+                        top_p=self.config["top_p"],
                     )
                     return response
                 except openai.RateLimitError:
@@ -146,10 +147,7 @@ class OpenAIChat():
 
             return None
 
-        async_responses = [
-            _request_with_retry(messages)
-            for messages in messages_list
-        ]
+        async_responses = [_request_with_retry(messages) for messages in messages_list]
 
         return await asyncio.gather(*async_responses, return_exceptions=True)
 
@@ -161,12 +159,18 @@ class OpenAIChat():
         while retry > 0 and len(messages_list_cur_index) > 0:
             messages_list_cur = [messages_list[i] for i in messages_list_cur_index]
 
-            predictions = asyncio.run(self.dispatch_openai_requests(
-                messages_list=messages_list_cur,
-            ))
+            predictions = asyncio.run(
+                self.dispatch_openai_requests(
+                    messages_list=messages_list_cur,
+                )
+            )
 
-            preds = [self._type_check(self._boolean_fix(prediction.choices[0].message.content),
-                                      expected_type) if prediction is not None else None for prediction in predictions]
+            preds = [
+                self._type_check(self._boolean_fix(prediction.choices[0].message.content), expected_type)
+                if prediction is not None
+                else None
+                for prediction in predictions
+            ]
             finised_index = []
             for i, pred in enumerate(preds):
                 if pred is not None:
@@ -178,6 +182,7 @@ class OpenAIChat():
             retry -= 1
 
         return responses
+
 
 # class OpenAIEmbed():
 #     def __init__():

@@ -9,7 +9,7 @@ factool_retriever:
 factool_verifier:
   input_name: claims_with_evidences
   output_name: label
-factcheckgpt_model: gpt-3.5-turbo
+factcheckgpt_model: gpt-4o
 factcheckgpt_claimprocessor:
   input_name: response
   output_name: claims
@@ -31,9 +31,9 @@ factcheckgpt_retriever:
 factcheckgpt_verifier:
   input_name: claims_with_evidences
   output_name: label
-  stance_model: gpt-3.5-turbo
+  stance_model: gpt-4o
   verify_retries: 3
-rarr_model: gpt-3.5-turbo-instruct
+rarr_model: gpt-4o-instruct
 rarr_retriever:
   input_name: claims
   output_name: claims_with_evidences

@@ -15,56 +15,57 @@ import openai
 from openai import OpenAI, AsyncOpenAI
 import re
 
-class OpenAIChat():
+
+class OpenAIChat:
     def __init__(
-            self,
-            model_name='gpt-3.5-turbo',
-            max_tokens=2500,
-            temperature=0,
-            top_p=1,
-            request_timeout=120,
+        self,
+        model_name="gpt-4o",
+        max_tokens=2500,
+        temperature=0,
+        top_p=1,
+        request_timeout=120,
     ):
-        if 'gpt' not in model_name:
+        if "gpt" not in model_name:
             openai.api_base = "http://localhost:8000/v1"
         else:
-            #openai.api_base = "https://api.openai.com/v1"
+            # openai.api_base = "https://api.openai.com/v1"
             openai.api_key = os.environ.get("OPENAI_API_KEY", None)
             assert openai.api_key is not None, "Please set the OPENAI_API_KEY environment variable."
-            assert openai.api_key !='', "Please set the OPENAI_API_KEY environment variable."
+            assert openai.api_key != "", "Please set the OPENAI_API_KEY environment variable."
         self.client = AsyncOpenAI()
 
         self.config = {
-            'model_name': model_name,
-            'max_tokens': max_tokens,
-            'temperature': temperature,
-            'top_p': top_p,
-            'request_timeout': request_timeout,
+            "model_name": model_name,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "top_p": top_p,
+            "request_timeout": request_timeout,
         }
 
     def extract_list_from_string(self, input_string):
-        # pattern = r'\[.*\]'  
+        # pattern = r'\[.*\]'
         # result = re.search(pattern, input_string)
         # if result:
         #     return result.group()
         # else:
         #     return None
-        start_index = input_string.find('[')  
-        end_index = input_string.rfind(']') 
+        start_index = input_string.find("[")
+        end_index = input_string.rfind("]")
 
         if start_index != -1 and end_index != -1 and start_index < end_index:
-            return input_string[start_index:end_index + 1]
+            return input_string[start_index : end_index + 1]
         else:
             return None
-        
+
     def extract_dict_from_string(self, input_string):
-        start_index = input_string.find('{')
-        end_index = input_string.rfind('}')
+        start_index = input_string.find("{")
+        end_index = input_string.rfind("}")
 
         if start_index != -1 and end_index != -1 and start_index < end_index:
-            return input_string[start_index:end_index + 1]
+            return input_string[start_index : end_index + 1]
         else:
             return None
-    
+
     def _boolean_fix(self, output):
         return output.replace("true", "True").replace("false", "False")
 
@@ -75,7 +76,7 @@ class OpenAIChat():
                 return None
             return output_eval
         except:
-            '''
+            """
             if(expected_type == List):
                 valid_output = self.extract_list_from_string(output)
                 output_eval = ast.literal_eval(valid_output)
@@ -88,46 +89,47 @@ class OpenAIChat():
                 if not isinstance(output_eval, expected_type):
                     return None
                 return output_eval
-            '''
+            """
             return None
 
-    async def dispatch_openai_requests(self, messages_list,) -> list[str]:
+    async def dispatch_openai_requests(
+        self,
+        messages_list,
+    ) -> list[str]:
         """
         Dispatches requests to OpenAI API asynchronously.
-        
+
         Args:
             messages_list: List of messages to be sent to OpenAI ChatCompletion API.
         Returns:
             List of responses from OpenAI API.
         """
+
         async def _request_with_retry(messages, retry=3):
             for attempt in range(retry):
                 try:
                     response = await self.client.chat.completions.create(
-                        model=self.config['model_name'],
+                        model=self.config["model_name"],
                         messages=messages,
-                        max_tokens=self.config['max_tokens'],
-                        temperature=self.config['temperature'],
-                        top_p=self.config['top_p']
+                        max_tokens=self.config["max_tokens"],
+                        temperature=self.config["temperature"],
+                        top_p=self.config["top_p"],
                     )
                     return response
                 except openai.RateLimitError as e:
-                    await asyncio.sleep((2 ** attempt) * 0.5)  # exponential backoff
+                    await asyncio.sleep((2**attempt) * 0.5)  # exponential backoff
                 except (openai.Timeout, openai.APIError) as e:
-                    await asyncio.sleep((2 ** attempt) * 0.5)  # exponential backoff
+                    await asyncio.sleep((2**attempt) * 0.5)  # exponential backoff
                 except Exception as e:
                     # Log unexpected exception for further investigation
-                    await asyncio.sleep((2 ** attempt) * 0.5)  # fallback in case of unknown errors
-                    
+                    await asyncio.sleep((2**attempt) * 0.5)  # fallback in case of unknown errors
+
             raise RuntimeError("All retries failed for OpenAI API request")
 
-        async_responses = [
-            _request_with_retry(messages)
-            for messages in messages_list
-        ]
+        async_responses = [_request_with_retry(messages) for messages in messages_list]
 
         return await asyncio.gather(*async_responses, return_exceptions=True)
-    
+
     def run(self, messages_list, expected_type):
         retry = 1
         responses = [None for _ in range(len(messages_list))]
@@ -135,23 +137,31 @@ class OpenAIChat():
 
         while retry > 0 and len(messages_list_cur_index) > 0:
             messages_list_cur = [messages_list[i] for i in messages_list_cur_index]
-            
-            predictions = asyncio.run(self.dispatch_openai_requests(
-                messages_list=messages_list_cur,
-            ))
 
-            preds = [self._type_check(self._boolean_fix(prediction.choices[0].message.content), expected_type) if prediction is not None else None for prediction in predictions]
+            predictions = asyncio.run(
+                self.dispatch_openai_requests(
+                    messages_list=messages_list_cur,
+                )
+            )
+
+            preds = [
+                self._type_check(self._boolean_fix(prediction.choices[0].message.content), expected_type)
+                if prediction is not None
+                else None
+                for prediction in predictions
+            ]
             finised_index = []
             for i, pred in enumerate(preds):
                 if pred is not None:
                     responses[messages_list_cur_index[i]] = pred
                     finised_index.append(messages_list_cur_index[i])
-            
+
             messages_list_cur_index = [i for i in messages_list_cur_index if i not in finised_index]
-            
+
             retry -= 1
-        
+
         return responses
+
 
 # class OpenAIEmbed():
 #     def __init__():
@@ -190,9 +200,9 @@ class OpenAIChat():
 #     ))
 
 #     print(predictions)
-    # Usage
-    # embed = OpenAIEmbed()
-    # batch = ["string1", "string2", "string3", "string4", "string5", "string6", "string7", "string8", "string9", "string10"]  # Your batch of strings
-    # embeddings = asyncio.run(embed.process_batch(batch, retry=3))
-    # for embedding in embeddings:
-    #     print(embedding["data"][0]["embedding"])
+# Usage
+# embed = OpenAIEmbed()
+# batch = ["string1", "string2", "string3", "string4", "string5", "string6", "string7", "string8", "string9", "string10"]  # Your batch of strings
+# embeddings = asyncio.run(embed.process_batch(batch, retry=3))
+# for embedding in embeddings:
+#     print(embedding["data"][0]["embedding"])

@@ -9,24 +9,22 @@ from .factcheckgpt_utils.data_util import save_to_file
 from .factcheckgpt_utils.prompt import IDENTIFY_STANCE_PROMPT, IDENTIFY_STANCE_PROMPT_FUNC
 from .factcheckgpt_utils.nli import nli_infer
 
+
 @Solver.register("factcheckgpt_verifier", "claims_with_evidences", "label")
 class FactCheckGPTVerifier(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)
-        self.stance_model = args.get("stance_model", "gpt-3.5-turbo")
+        self.stance_model = args.get("stance_model", "gpt-4o")
         self.num_retries = self.global_config.get("num_retries", 3)
         # self.system_role = args.get("system_role", "You are a helpful factchecker assistant.")
         self.system_role = "You are a helpful factchecker assistant."
         self.verify_retries = args.get("verify_retries", 3)
-        self.stance_map = {
-            1: "support",
-            -1: "refute",
-            0: "irrelevant"
-        }
+        self.stance_map = {1: "support", -1: "refute", 0: "irrelevant"}
 
     def verify_by_stance(
-            self, claim: str,
-            evidences: list[str],
+        self,
+        claim: str,
+        evidences: list[str],
     ) -> Any:
         labels = []
         for evidence in evidences:
@@ -45,12 +43,7 @@ class FactCheckGPTVerifier(StandardTaskSolver):
 
     def identify_stance_gpt(self, evidence, claim):
         user_input = IDENTIFY_STANCE_PROMPT_FUNC.format(claim=claim, evidence=evidence)
-        r = gpt(
-            user_input,
-            model=self.stance_model,
-            system_role=self.system_role,
-            num_retries=self.num_retries
-        )
+        r = gpt(user_input, model=self.stance_model, system_role=self.system_role, num_retries=self.num_retries)
         label = 0
         try:
             label = eval(r)
@@ -58,9 +51,9 @@ class FactCheckGPTVerifier(StandardTaskSolver):
             print(f"An unexpected error occurred: {e}.")
         return label
 
-    def stance(self, evidence, claim, model="gpt-3.5-turbo"):
+    def stance(self, evidence, claim, model="gpt-4o"):
         """input: a claim and an evidence
-           output: label in [support, refute, irrelevant]"""
+        output: label in [support, refute, irrelevant]"""
         label = 0
         if self.stance_model == "nli":
             label = nli_infer(premise=evidence, hypothesis=claim)
@@ -73,7 +66,7 @@ class FactCheckGPTVerifier(StandardTaskSolver):
     def verify_claim(self, claim: str, evidences: list[str]) -> dict[str, Any]:
         results = None
         user_input = VERIFY_PROMPT.format(claim=claim, evidence=evidences)
-        r = ''
+        r = ""
         for _ in range(self.verify_retries):
             r = gpt(
                 user_input,
@@ -97,12 +90,7 @@ class FactCheckGPTVerifier(StandardTaskSolver):
         else:
             print(f"Error output {r}. It does not output a dict, return factual label by stance aggregation.")
             factual_label = self.verify_by_stance(claim, evidences)
-            results = {
-                "reasoning": "",
-                "error": "",
-                "correction": "",
-                "factuality": factual_label
-            }
+            results = {"reasoning": "", "error": "", "correction": "", "factuality": factual_label}
             return results
 
     def __call__(self, state: FactCheckerState, *args, **kwargs):
@@ -113,6 +101,6 @@ class FactCheckGPTVerifier(StandardTaskSolver):
             result["claim"] = claim
             result["evidences"] = evidences
             results.append(result)
-        state.set(self.output_name, all([x['factuality'] > 0 for x in results]))
+        state.set(self.output_name, all([x["factuality"] > 0 for x in results]))
         state.set("detail", results)
         return True, state

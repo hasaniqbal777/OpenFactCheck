@@ -4,11 +4,12 @@ from openfactcheck.solver import StandardTaskSolver, Solver
 from .factool_utils.chat_api import OpenAIChat
 from .factool_utils.prompt import CLAIM_EXTRACTION_PROMPT
 
+
 @Solver.register("factool_claimprocessor", "response", "claims")
 class FactoolClaimProcessor(StandardTaskSolver):
     def __init__(self, args):
         super().__init__(args)
-        self.gpt_model = self.global_config.get("factool_gpt_model", "gpt-3.5-turbo")
+        self.gpt_model = self.global_config.get("factool_gpt_model", "gpt-4o")
         self.gpt = OpenAIChat(self.gpt_model)
         self.claim_prompt = CLAIM_EXTRACTION_PROMPT
 
@@ -16,7 +17,7 @@ class FactoolClaimProcessor(StandardTaskSolver):
         response = state.get(self.input_name)
 
         claims = self._claim_extraction(responses=[response])[0]
-        
+
         extracted_claims = [claim["claim"] for claim in claims]
 
         state.set(self.output_name, extracted_claims)
