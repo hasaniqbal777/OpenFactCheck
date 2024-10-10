@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -28,7 +28,7 @@ jobs:
           pip install -r requirements.txt
           pip install build
           pip install twine
-      
+
       - name: Build Package
         run: |
           python -m build
@@ -55,7 +55,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
-      
+
       - name: Setup Git Config
         run: |
           git checkout main
@@ -71,7 +71,7 @@ jobs:
 
       - name: Wait for 10 seconds
         run: sleep 10
-        
+
       - name: Push to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
