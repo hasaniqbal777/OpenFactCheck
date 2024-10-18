@@ -149,18 +149,18 @@ class OpenFactCheckConfig:
             else:
                 if self.solver_configs:
                     solvers = list(self.solver_configs.keys())
-                    claimprocessor = None
-                    retriever = None
-                    verifier = None
+                    claimprocessor = "factool_claimprocessor" if "factool_claimprocessor" in solvers else None
+                    retriever = "factool_retriever" if "factool_retriever" in solvers else None
+                    verifier = "factcheckgpt_verifier" if "factcheckgpt_verifier" in solvers else None
                     for solver in solvers:
+                        if claimprocessor and retriever and verifier:
+                            break
                         if "claimprocessor" in solver:
                             claimprocessor = solver
                         if "retriever" in solver:
                             retriever = solver
                         if "verifier" in solver:
                             verifier = solver
-                        if claimprocessor and retriever and verifier:
-                            break
                     self.pipeline = [claimprocessor, retriever, verifier]
                     self.logger.warning(
                         f"No pipeline found in the configuration file. Using first solver as default pipeline. ClaimProcessor: {claimprocessor}, Retriever: {retriever}, Verifier: {verifier}"
