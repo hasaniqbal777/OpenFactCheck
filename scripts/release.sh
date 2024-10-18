@@ -138,8 +138,14 @@ if [[ "$VERSION" =~ -rc[0-9]+$ ]]; then
     # It's a pre-release because it contains `rc`
     gh release create "$VERSION" --generate-notes --prerelease
     echo "Pre-release $VERSION created."
+
+    # Also release in the organization
+    gh release create "$VERSION" --generate-notes --prerelease --repo "mbzuai-nlp/openfactcheck"
 else
     # It's a full release
     gh release create "$VERSION" --generate-notes
     echo "Release $VERSION created."
+
+    # Also release in the organization
+    gh release create "$VERSION" --generate-notes --repo "mbzuai-nlp/openfactcheck"
 fi
