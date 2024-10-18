@@ -83,7 +83,7 @@ class OpenFactCheckConfig:
         self.filename_or_path = filename_or_path
 
         # Define namedtuple structures
-        Secrets = namedtuple("Secrets", ["openai_api_key", "serper_api_key", "azure_search_key"])
+        Secrets = namedtuple("Secrets", ["openai_api_key", "serper_api_key", "scraper_api_key"])
 
         # Define Attributes
         self.config: dict = {}
@@ -92,7 +92,7 @@ class OpenFactCheckConfig:
         self.solver_configs: dict[Any, Any] = SolversConfig(solver_config_template_files)()
         self.solver_paths: dict[str, list[str]] = {"default": solver_templates_paths, "user_defined": []}
         self.output_path: str = "tmp/output"
-        self.secrets: Secrets = Secrets(openai_api_key=None, serper_api_key=None, azure_search_key=None)
+        self.secrets: Secrets = Secrets(openai_api_key=None, serper_api_key=None, scraper_api_key=None)
         self.verbose = "WARNING"
 
         try:
@@ -171,7 +171,7 @@ class OpenFactCheckConfig:
                 self.secrets = Secrets(
                     openai_api_key=self.config["secrets"]["openai_api_key"],
                     serper_api_key=self.config["secrets"]["serper_api_key"],
-                    azure_search_key=self.config["secrets"]["azure_search_key"],
+                    scraper_api_key=self.config["secrets"]["scraper_api_key"],
                 )
             else:
                 self.logger.warning(
@@ -183,8 +183,8 @@ class OpenFactCheckConfig:
                 os.environ["OPENAI_API_KEY"] = self.secrets.openai_api_key
             if self.secrets.serper_api_key:
                 os.environ["SERPER_API_KEY"] = self.secrets.serper_api_key
-            if self.secrets.azure_search_key:
-                os.environ["AZURE_SEARCH_KEY"] = self.secrets.azure_search_key
+            if self.secrets.scraper_api_key:
+                os.environ["scraper_api_key"] = self.secrets.scraper_api_key
 
             # Initialize Verbose
             if "verbose" in self.config:
@@ -233,9 +233,9 @@ class OpenFactCheckConfig:
         if "SERPER_API_KEY" not in os.environ:
             self.logger.warning("SERPER_API_KEY environment variable not found.")
             raise ConfigValidationError("SERPER_API_KEY environment variable not found.")
-        if "AZURE_SEARCH_KEY" not in os.environ:
-            self.logger.warning("AZURE_SEARCH_KEY environment variable not found.")
-            raise ConfigValidationError("AZURE_SEARCH_KEY environment variable not found.")
+        if "SCRAPER_API_KEY" not in os.environ:
+            self.logger.warning("SCRAPER_API_KEY environment variable not found.")
+            raise ConfigValidationError("SCRAPER_API_KEY environment variable not found.")
 
     def solver_configuration(self, solver: str | None = None) -> dict:
         """
