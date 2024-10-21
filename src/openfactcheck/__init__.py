@@ -4,4 +4,4 @@ from .state import *
 from .solver import *
 
 # Version of the openfactcheck package
-__version__ = "0.3.7"
+__version__ = "0.3.8"
