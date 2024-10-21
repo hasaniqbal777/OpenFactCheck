@@ -6,10 +6,6 @@ import openai
 client = None
 
 
-def _json_fix(output):
-    return output.replace("```json\n", "").replace("```", "")
-
-
 def init_client():
     global client
     if client is None:
@@ -45,9 +41,6 @@ def request(
     messages = [{"role": "system", "content": system_role}] + chat_histories
 
     response = client.chat.completions.create(model=model, messages=messages, temperature=temperature)
-
-    # Fix the json format
-    response = _json_fix(response)
 
     if return_all:
         return response

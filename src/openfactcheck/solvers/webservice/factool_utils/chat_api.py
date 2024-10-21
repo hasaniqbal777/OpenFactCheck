@@ -72,9 +72,6 @@ class OpenAIChat:
         else:
             return None
 
-    def _json_fix(self, output):
-        return output.replace("```json\n", "").replace("```", "")
-
     def _boolean_fix(self, output):
         return output.replace("true", "True").replace("false", "False")
 
@@ -169,9 +166,7 @@ class OpenAIChat:
             )
 
             preds = [
-                self._type_check(
-                    self._boolean_fix(self._json_fix(prediction.choices[0].message.content)), expected_type
-                )
+                self._type_check(self._boolean_fix(prediction.choices[0].message.content), expected_type)
                 if prediction is not None
                 else None
                 for prediction in predictions
