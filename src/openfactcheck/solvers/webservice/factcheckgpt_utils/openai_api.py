@@ -6,6 +6,10 @@ import openai
 client = None
 
 
+def json_fix(output):
+    return output.replace("```json\n", "").replace("\n```", "")
+
+
 def init_client():
     global client
     if client is None:
@@ -47,6 +51,9 @@ def request(
     response_str = ""
     for choice in response.choices:
         response_str += choice.message.content
+
+    response_str = json_fix(response_str)
+
     return response_str
 
 

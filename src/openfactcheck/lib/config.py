@@ -184,7 +184,7 @@ class OpenFactCheckConfig:
             if self.secrets.serper_api_key:
                 os.environ["SERPER_API_KEY"] = self.secrets.serper_api_key
             if self.secrets.scraper_api_key:
-                os.environ["scraper_api_key"] = self.secrets.scraper_api_key
+                os.environ["SCRAPER_API_KEY"] = self.secrets.scraper_api_key
 
             # Initialize Verbose
             if "verbose" in self.config:
