@@ -32,7 +32,7 @@ maintainers = [
 name = "openfactcheck"
 readme = "README.md"
 requires-python = ">=3.10"
-version = "0.3.8"
+version = "0.3.9"
 
 [project.urls]
 "Bug Tracker" = "https://github.com/hasaniqbal777/openfactcheck/issues"
