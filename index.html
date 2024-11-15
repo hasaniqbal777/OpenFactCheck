@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <meta property='og:title' content='OpenFactCheck: A Unified Framework for Factuality Evaluation of LLMs' />
 <meta property='og:image' content='' />
 <meta property='og:description' content='' />
-<meta property='og:url' content='https://github.com/hasaniqbal777/openfactcheck' />
+<meta property='og:url' content='https://github.com/mbzuai-nlp/openfactcheck' />
 <meta property='og:image:width' content='1200' />
 <meta property='og:image:height' content='663' />
 <!-- TYPE BELOW IS PROBABLY: 'website' or 'article' or look on https://ogp.me/#types -->
@@ -100,79 +99,81 @@
 
               <!-- Publication Links -->
               <div class="publication-links">
-                <!-- ArXiv PDF link -->
+
+                <!-- Main Paper -->
                 <span class="link-block">
-                  <a href="https://arxiv.org/pdf/2405.05583" class="external-link button is-normal is-rounded is-dark">
+                <a href="https://arxiv.org/pdf/2405.05583" 
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>Main Paper</span>
+                </a>
+
+                <!-- Demo Paper -->
+                <span class="link-block">
+                  <a href="https://aclanthology.org/2024.emnlp-demo.23.pdf"
+                    class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
-                      <i class="ai ai-arxiv"></i>
+                      <i class="fas fa-book"></i>
                     </span>
-                    <span>Main Paper</span>
+                    <span>Demo Paper</span>
+                  </a>
+                </span>
+
+                <!-- Code link -->
+                <span class="link-block">
+                  <a href="https://github.com/mbzuai-nlp/openfactcheck"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                <!-- Documentation link -->
+                <span class="link-block">
+                  <a href="https://openfactcheck.readthedocs.io/en/stable/"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-book"></i>
+                    </span>
+                    <span>Docs</span>
+                  </a>
+                </span>
+
+                <!-- Video link -->
+                <span class="link-block">
+                  <a href="https://youtu.be/-i9VKL0HleI?si=MJg9LIP7U-AAS07e"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                    </span>
+                    <span>Video</span>
+                  </a>
+                </span>
+
+                <!-- Hugging Face link -->
+                <span class="link-block
+                ">
+                  <a href="http://app.openfactcheck.com"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-rocket"></i>
+                    </span>
+                    <span>Web App</span>
                   </a>
 
-                  <!-- PDF link -->
+                  <!-- BibTex link -->
                   <span class="link-block">
-                    <a href="https://arxiv.org/pdf/2408.11832"
-                      class="external-link button is-normal is-rounded is-dark">
+                    <a href="#bibtex" class="external-link button is-normal is-rounded is-dark">
                       <span class="icon">
-                        <i class="ai ai-arxiv"></i>
+                        <i class="ai ai-obp"></i>
                       </span>
-                      <span>Demo Paper</span>
+                      <span>BibTex</span>
                     </a>
                   </span>
-
-                  <!-- Code link -->
-                  <span class="link-block">
-                    <a href="https://github.com/hasaniqbal777/openfactcheck"
-                      class="external-link button is-normal is-rounded is-dark">
-                      <span class="icon">
-                        <i class="fab fa-github"></i>
-                      </span>
-                      <span>Code</span>
-                    </a>
-                  </span>
-
-                  <!-- Documentation link -->
-                  <span class="link-block">
-                    <a href="https://openfactcheck.readthedocs.io/en/stable/"
-                      class="external-link button is-normal is-rounded is-dark">
-                      <span class="icon">
-                        <i class="fas fa-book"></i>
-                      </span>
-                      <span>Docs</span>
-                    </a>
-                  </span>
-
-                  <!-- Video link -->
-                  <span class="link-block">
-                    <a href="https://youtu.be/-i9VKL0HleI?si=MJg9LIP7U-AAS07e"
-                      class="external-link button is-normal is-rounded is-dark">
-                      <span class="icon">
-                        <i class="fab fa-youtube"></i>
-                      </span>
-                      <span>Video</span>
-                    </a>
-                  </span>
-
-                  <!-- Hugging Face link -->
-                  <span class="link-block
-                  ">
-                    <a href="https://huggingface.co/spaces/hasaniqbal777/OpenFactCheck"
-                      class="external-link button is-normal is-rounded is-dark">
-                      <span class="icon">
-                        <i class="fas fa-rocket"></i>
-                      </span>
-                      <span>Web App</span>
-                    </a>
-
-                    <!-- BibTex link -->
-                    <span class="link-block">
-                      <a href="#bibtex" class="external-link button is-normal is-rounded is-dark">
-                        <span class="icon">
-                          <i class="ai ai-obp"></i>
-                        </span>
-                        <span>BibTex</span>
-                      </a>
-                    </span>
               </div>
             </div>
           </div>
@@ -480,7 +481,7 @@
 
             <h3>OpenFactCheck Web Dashboard</h3>
             <p>OpenFactCheck is also available as a web service. Users can access the web interface by visiting the
-              following link: <a href="https://huggingface.co/spaces/hasaniqbal777/OpenFactCheck">OpenFactCheck Web
+              following link: <a href="http://app.openfactcheck.com">OpenFactCheck Web
                 Interface</a>. The web interface
               provides a user-friendly interface for users to interact with the three modules mentioned above as shown
               in the following figure.</p>
@@ -529,7 +530,7 @@
                   </li>
                   <li> <b>OpenFactCheck Web Dashboard</b>: We provide a web service for OpenFactCheck, which is
                     available
-                    at <a href="https://huggingface.co/spaces/hasaniqbal777/OpenFactCheck">OpenFactCheck Web
+                    at <a href="http://app.openfactcheck.com">OpenFactCheck Web
                       Interface</a>.
                   </li>
                 </ol>
@@ -555,7 +556,7 @@
         <p>For additional details about OpenFactCheck, dataset, results, please refer to our main <a
             href="https://arxiv.org/pdf/2405.05583">paper</a> and demo <a
             href="static/paper/EMNLP_Demo_2024_OpenFactCheck.pdf">paper</a>. Also check out the repository on <a
-            href="https://github.com/hasaniqbal777/openfactcheck">GitHub</a> and the <a
+            href="https://github.com/mbzuai-nlp/openfactcheck">GitHub</a> and the <a
             href="https://openfactcheck.readthedocs.io/en/stable/">documentation</a> for more information.</p>
 
       </div>
@@ -577,12 +578,27 @@
         <h2 class="title is-4 has-text-justified"><a id="bibtex">BibTeX</a></h2>
         <div class="container content has-text-justified">
           <pre><code>
-            @article{wang2024openfactcheck,
-              title={OpenFactCheck: A Unified Framework for Factuality Evaluation of LLMs},
-              author={Wang, Yuxia and Wang, Minghan and Iqbal, Hasan and Georgiev, Georgi and Geng, Jiahui and Nakov, Preslav},
-              journal={arXiv preprint arXiv:2405.05583},
-              year={2024}
-            }
+  @inproceedings{iqbal-etal-2024-openfactcheck,
+    title = "{O}pen{F}act{C}heck: A Unified Framework for Factuality Evaluation of {LLM}s",
+    author = "Iqbal, Hasan  and
+      Wang, Yuxia  and
+      Wang, Minghan  and
+      Georgiev, Georgi Nenkov  and
+      Geng, Jiahui  and
+      Gurevych, Iryna  and
+      Nakov, Preslav",
+    editor = "Hernandez Farias, Delia Irazu  and
+      Hope, Tom  and
+      Li, Manling",
+    booktitle = "Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing: System Demonstrations",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.emnlp-demo.23",
+    pages = "219--229",
+    abstract = "The increased use of large language models (LLMs) across a variety of real-world applications calls for automatic tools to check the factual accuracy of their outputs, as LLMs often hallucinate. This is difficult as it requires assessing the factuality of free-form open-domain responses. While there has been a lot of research on this topic, different papers use different evaluation benchmarks and measures,which makes them hard to compare and hampers future progress. To mitigate these issues, we developed OpenFactCheck, a unified framework, with three modules: (i) RESPONSEEVAL, which allows users to easily customize an automatic fact-checking system and to assess the factuality of all claims in an input document using that system, (ii) LLMEVAL, which assesses the overall factuality of an LLM, and (iii) CHECKEREVAL, a module to evaluate automatic fact-checking systems. OpenFactCheck is open-sourced (https://github.com/mbzuai-nlp/openfactcheck) and publicly released as a Python library (https://pypi.org/project/openfactcheck/) and also as a web service (http://app.openfactcheck.com). A video describing the system is available at https://youtu.be/-i9VKL0HleI.",
+}          
           </code></pre>
         </div>
 
