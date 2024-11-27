@@ -10,8 +10,6 @@ ignore.*.tfvars
 .vscode/
 
 # Project Specific
-/logo/
-/favicon/
 DEVNOTES
 tmp/
 dev*.json
@@ -34,3 +32,6 @@ error_output.txt
 
 # Doc Specific
 **/reference/api/*
+
+# Assets Specific
+**/assets/*/*
