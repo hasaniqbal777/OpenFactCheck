@@ -76,4 +76,4 @@ jobs:
       - name: Push to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://hasaniqbal777:$HF_TOKEN@huggingface.co/spaces/hasaniqbal777/OpenFactCheck-Nightly main --force
+        run: git push https://hasaniqbal777:$HF_TOKEN@huggingface.co/spaces/hasaniqbal777/OpenFactCheck-Prerelease main --force
