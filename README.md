@@ -25,8 +25,8 @@ pinned: false
     <img alt="Docs" src="https://img.shields.io/readthedocs/openfactcheck?logo=readthedocs&label=Docs">
 </a>
 <br>
-<a href="https://opensource.org/licenses/Apache-2.0">
-    <img src="https://img.shields.io/github/license/hasaniqbal777/openfactcheck" alt="License: Apache-2.0">
+<a href="https://gnu.org/licenses/gpl-3.0.html">
+    <img src="https://img.shields.io/github/license/hasaniqbal777/openfactcheck" alt="License">
 </a>
 <a href="https://pypi.org/project/openfactcheck/">
     <img src="https://img.shields.io/pypi/pyversions/openfactcheck.svg" alt="Python Version">
