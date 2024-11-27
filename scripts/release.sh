@@ -107,7 +107,7 @@ bump2version patch --new-version $VERSION_BUMP --allow-dirty --verbose
 
 # Modify the docs version
 # Regex to match development or release candidate versions
-if [[ "$VERSION" =~ -dev[0-9]+$ || "$VERSION" =~ -rc[0-9]+$ ]]; then
+if [[ "$VERSION" =~ dev[0-9]+$ || "$VERSION" =~ a[0-9]+$ || "$VERSION" =~ alpha[0-9]+$ || "$VERSION" =~ b[0-9]+$ || "$VERSION" =~ beta[0-9]+$ || "$VERSION" =~ rc[0-9]+$ ]]; then
     # It's a pre-release because it contains `dev` or `rc`
     c_echo $YELLOW "Skipping docs version bump for pre-release"
 else
@@ -129,12 +129,12 @@ git push origin $BRANCH
 git push origin $VERSION
 
 # Regex to match development or release candidate versions
-if [[ "$VERSION" =~ -dev[0-9]+$ ]]; then
+if [[ "$VERSION" =~ dev[0-9]+$ ]]; then
     # It's a development release because it contains `dev`
     c_echo $YELLOW "Skipping release to GitHub for development release"
     exit 0
 fi
-if [[ "$VERSION" =~ -rc[0-9]+$ ]]; then
+if [[ "$VERSION" =~ a[0-9]+$ || "$VERSION" =~ alpha[0-9]+$ || "$VERSION" =~ b[0-9]+$ || "$VERSION" =~ beta[0-9]+$ || "$VERSION" =~ rc[0-9]+$ ]]; then
     # It's a pre-release because it contains `rc`
     gh release create "$VERSION" --generate-notes --prerelease
     echo "Pre-release $VERSION created."

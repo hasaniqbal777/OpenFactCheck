@@ -43,3 +43,36 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
           twine upload dist/* --verbose
+
+  huggingface_deploy:
+    name: Deploy to Hugging Face
+    runs-on: ubuntu-latest
+    needs: pypi_deploy
+    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Setup Git Config
+        run: |
+          git checkout main
+          git config --global user.email "34169605+hasaniqbal777@users.noreply.github.com"
+          git config --global user.name "Hasan Iqbal"
+
+      - name: Enable HuggingFace Spaces Config
+        run: |
+          READMEFILE="README.md"
+          sed -i 's/<!--/---/g; s/-->/---/g' $READMEFILE
+          git add $READMEFILE
+          git commit -m "Uncommented HuggingFace Spaces Configuration" || echo "No changes to commit"
+
+      - name: Wait for 10 seconds
+        run: sleep 10
+
+      - name: Push to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: git push https://hasaniqbal777:$HF_TOKEN@huggingface.co/spaces/hasaniqbal777/OpenFactCheck-Nightly main --force
