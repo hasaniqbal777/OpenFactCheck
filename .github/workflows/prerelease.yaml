@@ -66,6 +66,7 @@ jobs:
         run: |
           READMEFILE="README.md"
           sed -i 's/<!--/---/g; s/-->/---/g' $READMEFILE
+          sed -i 's/^title: OpenFactCheck$/title: OpenFactCheck Prelease/' $READMEFILE
           git add $READMEFILE
           git commit -m "Uncommented HuggingFace Spaces Configuration" || echo "No changes to commit"
 
