@@ -7,6 +7,7 @@ import streamlit as st
 from openfactcheck.base import OpenFactCheck
 from openfactcheck.app.utils import metric_card
 
+
 def extract_text(claim):
     """
     Extracts text from a claim that might be a string formatted as a dictionary.
@@ -16,6 +17,7 @@ def extract_text(claim):
     if match:
         return match.group(1)
     return claim  # Return as is if no dictionary format detected
+
 
 # Create a function to check a LLM response
 def evaluate_response(ofc: OpenFactCheck):
@@ -40,32 +42,52 @@ def evaluate_response(ofc: OpenFactCheck):
     col1, col2, col3 = st.columns(3)
     with col1:
         if "claimprocessor" not in st.session_state:
-            st.session_state.claimprocessor = st.selectbox("Select Claim Processor", list(st.session_state.claimprocessors))
+            st.session_state.claimprocessor = st.selectbox(
+                "Select Claim Processor", list(st.session_state.claimprocessors)
+            )
         else:
-            st.session_state.claimprocessor = st.selectbox("Select Claim Processor", list(st.session_state.claimprocessors), index=list(st.session_state.claimprocessors).index(st.session_state.claimprocessor))
+            st.session_state.claimprocessor = st.selectbox(
+                "Select Claim Processor",
+                list(st.session_state.claimprocessors),
+                index=list(st.session_state.claimprocessors).index(st.session_state.claimprocessor),
+            )
     with col2:
         if "retriever" not in st.session_state:
             st.session_state.retriever = st.selectbox("Select Retriever", list(st.session_state.retrievers))
         else:
-            st.session_state.retriever = st.selectbox("Select Retriever", list(st.session_state.retrievers), index=list(st.session_state.retrievers).index(st.session_state.retriever))
+            st.session_state.retriever = st.selectbox(
+                "Select Retriever",
+                list(st.session_state.retrievers),
+                index=list(st.session_state.retrievers).index(st.session_state.retriever),
+            )
     with col3:
         if "verifier" not in st.session_state:
             st.session_state.verifier = st.selectbox("Select Verifier", list(st.session_state.verifiers))
         else:
-            st.session_state.verifier = st.selectbox("Select Verifier", list(st.session_state.verifiers), index=list(st.session_state.verifiers).index(st.session_state.verifier))
+            st.session_state.verifier = st.selectbox(
+                "Select Verifier",
+                list(st.session_state.verifiers),
+                index=list(st.session_state.verifiers).index(st.session_state.verifier),
+            )
 
     # Input
     if "input_text" not in st.session_state:
-        st.session_state.input_text = {"text": st.text_area("Enter LLM response here", "This is a sample LLM response.")}
+        st.session_state.input_text = {
+            "text": st.text_area("Enter LLM response here", "This is a sample LLM response.")
+        }
     else:
-        st.session_state.input_text = {"text": st.text_area("Enter LLM response here", st.session_state.input_text["text"])}
+        st.session_state.input_text = {
+            "text": st.text_area("Enter LLM response here", st.session_state.input_text["text"])
+        }
 
     # Button to check factuality
     if st.button("Check Factuality"):
         with st.status("Checking factuality...", expanded=True) as status:
             # Configure the pipeline
             st.write("Configuring pipeline...")
-            ofc.init_pipeline_manually([st.session_state.claimprocessor, st.session_state.retriever, st.session_state.verifier])
+            ofc.init_pipeline_manually(
+                [st.session_state.claimprocessor, st.session_state.retriever, st.session_state.verifier]
+            )
             st.write("Pipeline configured...")
 
             # Evaluate the response
@@ -77,7 +99,9 @@ def evaluate_response(ofc: OpenFactCheck):
             status.update(label="Factuality checked...", state="complete", expanded=False)
 
         # Display pipeline configuration
-        pipeline_str = "&nbsp;&nbsp;&nbsp;┈➤&nbsp;&nbsp;&nbsp;".join([st.session_state.claimprocessor, st.session_state.retriever, st.session_state.verifier])
+        pipeline_str = "&nbsp;&nbsp;&nbsp;┈➤&nbsp;&nbsp;&nbsp;".join(
+            [st.session_state.claimprocessor, st.session_state.retriever, st.session_state.verifier]
+        )
         st.info(f"""**Pipeline**:&nbsp;&nbsp;&nbsp; \n{pipeline_str}""")
 
         # Store the final response in the session state
@@ -85,6 +109,7 @@ def evaluate_response(ofc: OpenFactCheck):
 
         col1, col2 = st.columns([3, 1])
         with col1:
+
             def process_stream(responses):
                 """
                 Process each response from the stream as a simulated chat output.
@@ -102,7 +127,9 @@ def evaluate_response(ofc: OpenFactCheck):
 
                         # Generate formatted text with enumerated claims in Markdown format
                         formatted_text = "### Detected Claims\n"
-                        formatted_text += "\n".join(f"{i}. {extract_text(claim)}" for i, claim in enumerate(detected_claims, start=1))
+                        formatted_text += "\n".join(
+                            f"{i}. {extract_text(claim)}" for i, claim in enumerate(detected_claims, start=1)
+                        )
                         formatted_text += "\n"
 
                         with col2:
@@ -119,23 +146,15 @@ def evaluate_response(ofc: OpenFactCheck):
                         # Extract response details
                         output_text = response["output"]
 
+                        questions = []
                         evidences = []
                         for _, claim_with_evidences in output_text.get("claims_with_evidences", {}).items():
-                            for evidence in claim_with_evidences:
-                                evidences.append(evidence[1])
-
-                        # # Generate formatted text with enumerated evidences in Markdown format
-                        # formatted_text = "#### Retrieved Evidences\n"
-                        # formatted_text += "\n".join(f"{i}. {evidence}" for i, evidence in enumerate(evidences, start=1))
-                        # formatted_text += "\n"
+                            for claim_with_evidence in claim_with_evidences:
+                                questions.append(claim_with_evidence[0])
+                                evidences.append(claim_with_evidence[1])
 
                         with col2:
                             metric_card(label="Retrieved Evidences", value=len(evidences))
-
-                        # # Yield each word with a space and simulate typing by sleeping
-                        # for word in formatted_text.split(" "):
-                        #     yield word + " "
-                        #     time.sleep(0.01)
 
                     elif "verifier" in response["solver_name"]:
                         # Extract response details
@@ -149,7 +168,7 @@ def evaluate_response(ofc: OpenFactCheck):
                             detail_text = ""
 
                             # Apply color to the claim based on factuality
-                            claims=0
+                            claims = 0
                             false_claims = 0
                             true_claims = 0
                             controversial_claims = 0
@@ -158,7 +177,7 @@ def evaluate_response(ofc: OpenFactCheck):
                                 # Get factuality information
                                 factuality = str(detail.get("factuality", None))
                                 if factuality is not None:
-                                    claim=detail.get("claim", "")
+                                    claim = detail.get("claim", "")
                                     if factuality == "-1" or factuality == "False":
                                         detail_text += f'##### :red[{str(i+1) + ". " + extract_text(claim)}]'
                                         detail_text += "\n"
@@ -183,29 +202,35 @@ def evaluate_response(ofc: OpenFactCheck):
                                     st.error("Factuality not found in the verifier output.")
 
                                 # Add error information
-                                if detail.get("error", None) is not "None":
+                                if detail.get("error", None) != "None":
                                     detail_text += f"- **Error**: {detail.get('error', '')}"
                                     detail_text += "\n"
 
                                 # Add reasoning information
-                                if detail.get("reasoning", None) is not "None":
+                                if detail.get("reasoning", None) != "None":
                                     detail_text += f"- **Reasoning**: {detail.get('reasoning', '')}"
                                     detail_text += "\n"
-                                
+
                                 # Add correction
-                                if detail.get("correction", None) is not "":
+                                if detail.get("correction", None) != "":
                                     detail_text += f"- **Correction**: {detail.get('correction', '')}"
                                     detail_text += "\n"
 
                                 # Add evidence
-                                if detail.get("evidence", None) is not "":
+                                if detail.get("evidences", None) != "":
                                     evidence_text = ""
+                                    questions_evidences = {}
                                     for evidence in detail.get("evidences", []):
-                                        evidence_text += f"  - {evidence[1]}"
+                                        if evidence[0] not in questions_evidences:
+                                            questions_evidences[evidence[0]] = []
+                                        questions_evidences[evidence[0]].append(evidence[1])
+                                    for question, evidences in questions_evidences.items():
+                                        evidence_text += f"- **Evidences against Question**: :orange[{question}]"
                                         evidence_text += "\n"
-                                    detail_text += f"- **Evidence**:\n{evidence_text}"
+                                        for evidence in evidences:
+                                            evidence_text += f"  - {evidence}\n"
+                                    detail_text += evidence_text
 
-                                        
                         # Generate formatted text with the overall factuality in Markdown format
                         formatted_text = "### Factuality Detail\n"
                         formatted_text += "Factuality of each claim is color-coded (:red[red means false], :green[green means true], :orange[orange means controversial], :violet[violet means unverified]).\n"
@@ -214,32 +239,77 @@ def evaluate_response(ofc: OpenFactCheck):
 
                         # Get the number of true and false claims
                         with col2:
-                            metric_card(label="Supported Claims", value=true_claims, background_color="#D1ECF1", border_left_color="#17A2B8")
-                            metric_card(label="Conflicted Claims", value=false_claims, background_color="#D1ECF1", border_left_color="#17A2B8")
-                            metric_card(label="Controversial Claims", value=controversial_claims, background_color="#D1ECF1", border_left_color="#17A2B8")
-                            metric_card(label="Unverified Claims", value=unverified_claims, background_color="#D1ECF1", border_left_color="#17A2B8")
-                        
+                            metric_card(
+                                label="Supported Claims",
+                                value=true_claims,
+                                background_color="#D1ECF1",
+                                border_left_color="#17A2B8",
+                            )
+                            metric_card(
+                                label="Conflicted Claims",
+                                value=false_claims,
+                                background_color="#D1ECF1",
+                                border_left_color="#17A2B8",
+                            )
+                            metric_card(
+                                label="Controversial Claims",
+                                value=controversial_claims,
+                                background_color="#D1ECF1",
+                                border_left_color="#17A2B8",
+                            )
+                            metric_card(
+                                label="Unverified Claims",
+                                value=unverified_claims,
+                                background_color="#D1ECF1",
+                                border_left_color="#17A2B8",
+                            )
+
                         # Get overall factuality (label)
                         overall_factuality = output_text.get("label", "Unknown")
                         with col2:
                             with st.container():
-                                if overall_factuality == True:
-                                    metric_card(label="Overall Factuality", value="True", background_color="#D4EDDA", border_left_color="#28A745")
-                                elif overall_factuality == False:
-                                    metric_card(label="Overall Factuality", value="False", background_color="#F8D7DA", border_left_color="#DC3545")
+                                if overall_factuality:
+                                    metric_card(
+                                        label="Overall Factuality",
+                                        value="True",
+                                        background_color="#D4EDDA",
+                                        border_left_color="#28A745",
+                                    )
+                                elif not overall_factuality:
+                                    metric_card(
+                                        label="Overall Factuality",
+                                        value="False",
+                                        background_color="#F8D7DA",
+                                        border_left_color="#DC3545",
+                                    )
 
                         # Get overall credibility (score)
                         overall_credibility = true_claims / claims if claims > 0 else 0
                         with col2:
                             if overall_credibility > 0.75 and overall_credibility <= 1:
                                 # Green background
-                                metric_card(label="Overall Credibility", value=f"{overall_credibility:.2%}", background_color="#D4EDDA", border_left_color="#28A745")
+                                metric_card(
+                                    label="Overall Credibility",
+                                    value=f"{overall_credibility:.2%}",
+                                    background_color="#D4EDDA",
+                                    border_left_color="#28A745",
+                                )
                             elif overall_credibility > 0.25 and overall_credibility <= 0.75:
                                 # Yellow background
-                                metric_card(label="Overall Credibility", value=f"{overall_credibility:.2%}", background_color="#FFF3CD", border_left_color="#FFC107")
+                                metric_card(
+                                    label="Overall Credibility",
+                                    value=f"{overall_credibility:.2%}",
+                                    background_color="#FFF3CD",
+                                    border_left_color="#FFC107",
+                                )
                             else:
                                 # Red background
-                                metric_card(label="Overall Credibility", value=f"{overall_credibility:.2%}", background_color="#F8D7DA", border_left_color="#DC3545")
+                                metric_card(
+                                    label="Overall Credibility",
+                                    value=f"{overall_credibility:.2%}",
+                                    background_color="#F8D7DA",
+                                    border_left_color="#DC3545",
+                                )
 
                         # Yield each word with a space and simulate typing by sleeping
                         for word in formatted_text.split(" "):
@@ -247,4 +317,3 @@ def evaluate_response(ofc: OpenFactCheck):
                             time.sleep(0.01)
 
             st.write_stream(process_stream(response))
-                            
