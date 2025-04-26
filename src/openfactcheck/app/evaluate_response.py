@@ -32,6 +32,9 @@ def evaluate_response(ofc: OpenFactCheck):
     st.session_state.claimprocessors = ofc.list_claimprocessors()
     st.session_state.retrievers = ofc.list_retrievers()
     st.session_state.verifiers = ofc.list_verifiers()
+    st.session_state.claimprocessor = "factool_claimprocessor"
+    st.session_state.retriever = "factool_retriever"
+    st.session_state.verifier = "factcheckgpt_verifier"
 
     st.write("This is where you can check factuality of a LLM response.")
 
