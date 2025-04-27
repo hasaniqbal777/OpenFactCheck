@@ -224,9 +224,10 @@ def evaluate_response(ofc: OpenFactCheck):
                                     evidence_text = ""
                                     questions_evidences = {}
                                     for evidence in detail.get("evidences", []):
-                                        if evidence[0] not in questions_evidences:
-                                            questions_evidences[evidence[0]] = []
-                                        questions_evidences[evidence[0]].append(evidence[1])
+                                        question_evidence = str(evidence[0].split("?")[0]) + "?"
+                                        if question_evidence not in questions_evidences:
+                                            questions_evidences[question_evidence] = []
+                                        questions_evidences[question_evidence].append(evidence[1])
                                     for question, evidences in questions_evidences.items():
                                         evidence_text += f"- **Evidences against Question**: :orange[{question}]"
                                         evidence_text += "\n"
