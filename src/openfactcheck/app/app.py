@@ -59,21 +59,6 @@ class App:
         # Set up Sidebar
         sidebar()
 
-        # Remove whitespace from the top of the page and sidebar
-        st.markdown(
-            """
-        <style>
-               .block-container {
-                    padding-top: 2rem;
-                    padding-bottom: 0rem;
-                    padding-left: 5rem;
-                    padding-right: 5rem;
-                }
-        </style>
-        """,
-            unsafe_allow_html=True,
-        )
-
         st.markdown(
             """
             <div style='text-align: center;'>
