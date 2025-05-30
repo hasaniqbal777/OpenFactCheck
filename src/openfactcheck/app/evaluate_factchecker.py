@@ -16,15 +16,16 @@ from openfactcheck.templates import factchecker as templates_dir
 claims_templates_path = str(pkg_resources.files(templates_dir) / "claims.jsonl")
 documents_templates_path = str(pkg_resources.files(templates_dir) / "documents.jsonl")
 
+
 def evaluate_factchecker(ofc: OpenFactCheck):
     """
     This function creates a Streamlit app to evaluate a Factchecker.
     """
-    
+
     # Initialize the FactChecker Evaluator
     fc_evaluator = ofc.FactCheckerEvaluator
 
-    st.write("This is where you can evaluate the factuality of a FactChecker.")
+    st.info("Evaluate the factuality of a FactChecker using the *FactCheckBench*.")
 
     # Display the instructions
     st.write("Download the benchmark evaluate the factuality of a FactChecker.")
@@ -33,10 +34,11 @@ def evaluate_factchecker(ofc: OpenFactCheck):
     if os.path.exists(claims_templates_path) and os.path.exists(documents_templates_path):
         # Create a ZIP file in memory
         from io import BytesIO
+
         memory_file = BytesIO()
-        with zipfile.ZipFile(memory_file, 'w') as zf:
+        with zipfile.ZipFile(memory_file, "w") as zf:
             # Define the name of the file within the ZIP archive
-            zip_path = os.path.basename(claims_templates_path) # 'claims.jsonl'
+            zip_path = os.path.basename(claims_templates_path)  # 'claims.jsonl'
             # Add file to the ZIP file
             zf.write(claims_templates_path, arcname=zip_path)
 
@@ -44,7 +46,7 @@ def evaluate_factchecker(ofc: OpenFactCheck):
             # zip_path = os.path.basename(documents_templates_path) # 'documents.jsonl'
             # # Add file to the ZIP file
             # zf.write(documents_templates_path, arcname=zip_path)
-        
+
         # Reset pointer to start of the memory file
         memory_file.seek(0)
 
@@ -53,7 +55,7 @@ def evaluate_factchecker(ofc: OpenFactCheck):
             label="Download",
             data=memory_file,
             file_name="openfactcheck_factchecker_benchmark.zip",
-            mime="application/zip"
+            mime="application/zip",
         )
     else:
         st.error("File not found.")
@@ -68,12 +70,12 @@ def evaluate_factchecker(ofc: OpenFactCheck):
     if uploaded_file is None:
         st.info("Please upload a CSV file.")
         return
-    
+
     # Check if the file is a CSV file
     if uploaded_file.type != "text/csv":
         st.error("Invalid file format. Please upload a CSV file.")
         return
-    
+
     # Read the CSV file
     uploaded_data = pd.read_csv(uploaded_file)
 
@@ -106,9 +108,11 @@ def evaluate_factchecker(ofc: OpenFactCheck):
     st.text_input("FactChecker Name", key="input_factchecker", on_change=update_factchecker)
     st.text_input("Organization (Optional)", key="input_organization", on_change=update_organization)
 
-    st.checkbox("Please check this box if you want your FactChecker to be included in the leaderboard.", 
-                key="input_include_in_leaderboard", 
-                on_change=update_include_in_leaderboard)
+    st.checkbox(
+        "Please check this box if you want your FactChecker to be included in the leaderboard.",
+        key="input_include_in_leaderboard",
+        on_change=update_include_in_leaderboard,
+    )
 
     if st.button("Evaluate FactChecker"):
         # Display a success message
@@ -121,31 +125,44 @@ def evaluate_factchecker(ofc: OpenFactCheck):
 
         # Display the evaluation report
         st.write("### Evaluation report:")
-        
+
         col1, col2 = st.columns(2, gap="large")
         with col1:
             # Create the heatmap
-            classes = ['True', 'False']
+            classes = ["True", "False"]
             fig = plt.figure()
-            sns.heatmap(fc_evaluator.confusion_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=classes, yticklabels=classes)
-            plt.ylabel('Actual Class')
-            plt.xlabel('Predicted Class')
+            sns.heatmap(
+                fc_evaluator.confusion_matrix,
+                annot=True,
+                fmt="d",
+                cmap="Blues",
+                xticklabels=classes,
+                yticklabels=classes,
+            )
+            plt.ylabel("Actual Class")
+            plt.xlabel("Predicted Class")
             st.pyplot(fig)
         with col2:
             # Display the metrics
             accuracy = fc_evaluator.results["True_as_positive"]["accuracy"]
             if accuracy > 0.75 and accuracy <= 1:
                 # Green background
-                metric_card(label="Accuracy", value=f"{accuracy:.2%}", background_color="#D4EDDA", border_left_color="#28A745")
+                metric_card(
+                    label="Accuracy", value=f"{accuracy:.2%}", background_color="#D4EDDA", border_left_color="#28A745"
+                )
             elif accuracy > 0.25 and accuracy <= 0.75:
                 # Yellow background
-                metric_card(label="Accuracy", value=f"{accuracy:.2%}", background_color="#FFF3CD", border_left_color="#FFC107")
+                metric_card(
+                    label="Accuracy", value=f"{accuracy:.2%}", background_color="#FFF3CD", border_left_color="#FFC107"
+                )
             else:
                 # Red background
-                metric_card(label="Accuracy", value=f"{accuracy:.2%}", background_color="#F8D7DA", border_left_color="#DC3545")
-                
+                metric_card(
+                    label="Accuracy", value=f"{accuracy:.2%}", background_color="#F8D7DA", border_left_color="#DC3545"
+                )
+
             sub_col1, sub_col2, sub_col3 = st.columns(3)
-            with sub_col1:  
+            with sub_col1:
                 metric_card(label="Total Time", value=fc_evaluator.results["total_time"])
             with sub_col2:
                 metric_card(label="Total Cost", value=fc_evaluator.results["total_cost"])
@@ -153,6 +170,3 @@ def evaluate_factchecker(ofc: OpenFactCheck):
                 metric_card(label="Number of Samples", value=fc_evaluator.results["num_samples"])
 
             st.text("Report:\n" + fc_evaluator.classification_report)
-        
-
-    

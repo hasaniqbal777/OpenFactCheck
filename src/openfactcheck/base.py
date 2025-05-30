@@ -1,4 +1,4 @@
-import os 
+import os
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from openfactcheck.evaluator.llm import LLMEvaluator
     from openfactcheck.evaluator.response import ResponseEvaluator
     from openfactcheck.evaluator.checker import CheckerEvaluator
+
 
 class OpenFactCheck:
     """
@@ -77,6 +78,7 @@ class OpenFactCheck:
     >>> output = ofc.read_output(sample_name)
     >>> ofc.remove_output(sample_name)
     """
+
     def __init__(self, config: OpenFactCheckConfig):
         """
         Initialize OpenFactCheck with the given configuration.
@@ -88,7 +90,7 @@ class OpenFactCheck:
             settings for OpenFactCheck.
         """
         self.logger = logger
-        self.config = config    
+        self.config = config
 
         # Initialize attributes
         self.solver_configs = self.config.solver_configs
@@ -101,29 +103,32 @@ class OpenFactCheck:
 
         # Initialize the pipeline
         self.init_pipeline()
-    
+
     @property
-    def LLMEvaluator(self) -> 'LLMEvaluator':
+    def LLMEvaluator(self) -> "LLMEvaluator":
         """
         Return the LLM Evaluator
         """
         from openfactcheck.evaluator.llm import LLMEvaluator
+
         return LLMEvaluator(self)
-    
+
     @property
-    def FactCheckerEvaluator(self) -> 'CheckerEvaluator':
+    def FactCheckerEvaluator(self) -> "CheckerEvaluator":
         """
         Return the FactChecker Evaluator
         """
         from openfactcheck.evaluator.checker import CheckerEvaluator
+
         return CheckerEvaluator(self)
-    
+
     @property
-    def ResponseEvaluator(self) -> 'ResponseEvaluator':
+    def ResponseEvaluator(self) -> "ResponseEvaluator":
         """
         Return the LLM Response Evaluator
         """
         from openfactcheck.evaluator.response import ResponseEvaluator
+
         return ResponseEvaluator(self)
 
     @staticmethod
@@ -137,7 +142,9 @@ class OpenFactCheck:
                     abs_path = Path(solver_path).resolve()
                     if abs_path.is_dir():
                         sys.path.append(str(abs_path.parent))
-                        Solver.load(str(abs_path), f"{abs_path.parent.parent.name}.{abs_path.parent.name}.{abs_path.name}")
+                        Solver.load(
+                            str(abs_path), f"{abs_path.parent.parent.name}.{abs_path.parent.name}.{abs_path.name}"
+                        )
             else:
                 for solver_path in value:
                     abs_path = Path(solver_path).resolve()
@@ -151,7 +158,7 @@ class OpenFactCheck:
         List all registered solvers
         """
         return SOLVER_REGISTRY
-    
+
     @staticmethod
     def list_claimprocessors():
         """
@@ -164,7 +171,7 @@ class OpenFactCheck:
                 claimprocessors[solver] = value
 
         return claimprocessors
-    
+
     @staticmethod
     def list_retrievers():
         """
@@ -174,10 +181,11 @@ class OpenFactCheck:
         retrievers = {}
         for solver, value in SOLVER_REGISTRY.items():
             if "retriever" in solver:
-                retrievers[solver] = value
+                if "evidence" not in solver:  # Exclude evidence retrievers
+                    retrievers[solver] = value
 
         return retrievers
-    
+
     @staticmethod
     def list_verifiers():
         """
@@ -190,7 +198,7 @@ class OpenFactCheck:
                 verifiers[solver] = value
 
         return verifiers
-    
+
     def init_solver(self, solver_name, args):
         """
         Initialize a solver with the given configuration
@@ -200,16 +208,16 @@ class OpenFactCheck:
         if solver_name not in SOLVER_REGISTRY:
             logger.error(f"{solver_name} not in SOLVER_REGISTRY")
             raise RuntimeError(f"{solver_name} not in SOLVER_REGISTRY")
-        
+
         # Initialize the solver
         solver_cls = SOLVER_REGISTRY[solver_name]
         for key, value in args.items():
             setattr(solver_cls, key, value)
-        
+
         logger.info(f"Solver {solver_cls(args)} initialized")
 
         return solver_cls(args), solver_cls.input_name, solver_cls.output_name
-    
+
     def init_solvers(self):
         """
         Initialize all registered solvers
@@ -219,7 +227,7 @@ class OpenFactCheck:
             solver, input_name, output_name = self.init_solver(k, v)
             solvers[k] = (solver, input_name, output_name)
         return solvers
-    
+
     def init_pipeline(self):
         """
         Initialize the pipeline with the given configuration
@@ -237,7 +245,7 @@ class OpenFactCheck:
         for idx, (name, (solver, iname, oname)) in enumerate(self.pipeline.items()):
             self.logger.info(f"{idx}-{name} ({iname} -> {oname})")
         self.logger.info("---------------------------------------------------------")
-    
+
     def init_pipeline_manually(self, pipeline: list):
         """
         Initialize the pipeline with the given configuration

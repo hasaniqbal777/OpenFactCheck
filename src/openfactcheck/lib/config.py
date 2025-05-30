@@ -23,6 +23,7 @@ solver_config_template_files = [str(f) for f in Path(solver_config_templates_pat
 solver_templates_paths = [
     str(pkg_resources.files(solver_templates_dir) / "webservice"),
     str(pkg_resources.files(solver_templates_dir) / "factool"),
+    str(pkg_resources.files(solver_templates_dir) / "urdufactcheck"),
 ]
 
 # Load environment variables from .env file

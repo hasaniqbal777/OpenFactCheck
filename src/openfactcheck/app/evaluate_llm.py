@@ -13,14 +13,15 @@ from openfactcheck.templates import llm as templates_dir
 # Import solver configuration templates
 questions_templates_path = str(pkg_resources.files(templates_dir) / "questions.csv")
 
+
 def evaluate_llm(ofc: OpenFactCheck):
     """
     This function creates a Streamlit app to evaluate the factuality of a LLM.
     """
     # Initialize the LLM Evaluator
     llm_evaluator = ofc.LLMEvaluator
-    
-    st.write("This is where you can evaluate the factuality of a LLM.")
+
+    st.info("Evaluate the factuality of a Large Language Model (LLM) using *FactQA* Dataset.")
 
     # Display the instructions
     st.write("Download the questions and instructions to evaluate the factuality of a LLM.")
@@ -29,22 +30,20 @@ def evaluate_llm(ofc: OpenFactCheck):
     if os.path.exists(questions_templates_path):
         # Create a ZIP file in memory
         from io import BytesIO
+
         memory_file = BytesIO()
-        with zipfile.ZipFile(memory_file, 'w') as zf:
+        with zipfile.ZipFile(memory_file, "w") as zf:
             # Define the name of the file within the ZIP archive
             zip_path = os.path.basename(questions_templates_path)  # 'questions.csv'
             # Add file to the ZIP file
             zf.write(questions_templates_path, arcname=zip_path)
-        
+
         # Reset pointer to start of the memory file
         memory_file.seek(0)
 
         # Create a download button and the file will be downloaded when clicked
         btn = st.download_button(
-            label="Download",
-            data=memory_file,
-            file_name="openfactcheck_llm_benchmark.zip",
-            mime="application/zip"
+            label="Download", data=memory_file, file_name="openfactcheck_llm_benchmark.zip", mime="application/zip"
         )
     else:
         st.error("File not found.")
@@ -59,7 +58,7 @@ def evaluate_llm(ofc: OpenFactCheck):
     if uploaded_file is None:
         st.info("Please upload a CSV file.")
         return
-    
+
     # Check if the file is a CSV file
     if uploaded_file.type != "text/csv":
         st.error("Invalid file format. Please upload a CSV file.")
@@ -70,7 +69,10 @@ def evaluate_llm(ofc: OpenFactCheck):
 
     # Ask user to select datasets they want to evaluate on
     st.write("Please select the datasets you want to evaluate the LLM on.")
-    datasets = st.multiselect("Select datasets", ["snowballing", "selfaware", "freshqa", "factoolqa", "felm-wk", "factcheck-bench", "factscore-bio"])
+    datasets = st.multiselect(
+        "Select datasets",
+        ["snowballing", "selfaware", "freshqa", "factoolqa", "felm-wk", "factcheck-bench", "factscore-bio"],
+    )
 
     def update_first_name():
         st.session_state.first_name = st.session_state.input_first_name
@@ -102,9 +104,11 @@ def evaluate_llm(ofc: OpenFactCheck):
     st.text_input("Organization (Optional)", key="input_organization", on_change=update_organization)
 
     # Create a checkbox to include the user in the leaderboard
-    st.checkbox("Please check this box if you want your LLM to be included in the leaderboard.", 
-                key="input_include_in_leaderboard", 
-                on_change=update_include_in_leaderboard)
+    st.checkbox(
+        "Please check this box if you want your LLM to be included in the leaderboard.",
+        key="input_include_in_leaderboard",
+        on_change=update_include_in_leaderboard,
+    )
 
     if st.button("Evaluate LLM"):
         # Display a success message
@@ -120,18 +124,19 @@ If the report is not available, please contact the administrator and provide you
         # Display a waiting message
         with st.status("Evaluating factuality of the LLM...", expanded=True) as status:
             # Evaluate the LLM
-            results = llm_evaluator.evaluate(model_name=st.session_state.llm_model,
-                                             input_path=uploaded_data,
-                                             datasets=datasets, 
-                                             save_report=False)
-            
+            results = llm_evaluator.evaluate(
+                model_name=st.session_state.llm_model, input_path=uploaded_data, datasets=datasets, save_report=False
+            )
+
             # Get plots
             st.write("Generating plots...")
             plots = llm_evaluator.generate_plots(save_plots=False)
 
             # Generate the evaluation report
             st.write("Generating evaluation report...")
-            report_path = llm_evaluator.generate_report(report_path=f"{llm_evaluator.output_path}/{llm_evaluator.run_id}")
+            report_path = llm_evaluator.generate_report(
+                report_path=f"{llm_evaluator.output_path}/{llm_evaluator.run_id}"
+            )
 
             status.update(label="LLM evaluated...", state="complete", expanded=False)
 
@@ -158,8 +163,8 @@ If the report is not available, please contact the administrator and provide you
             with col2:
                 st.pyplot(plots["selfaware"]["cm"])
             with col3:
-                pass    
-        
+                pass
+
         # If freshqa dataset is selected
         if "freshqa" in datasets:
             st.write("#### Evaluation on FreshQA Dataset")
@@ -169,13 +174,13 @@ If the report is not available, please contact the administrator and provide you
             with col2:
                 pass
             with col3:
-                pass   
-        
+                pass
+
         # If any of the free-text datasets are selected
         if any(dataset in ["factoolqa", "felm-wk", "factcheck-bench", "factscore-bio"] for dataset in datasets):
             st.write("#### Evaluation on Free-Text Datasets")
             st.pyplot(plots["freetext"]["barplot"])
-    
+
         # Generate the evaluation report
         st.write("### Download Evaluation Report")
         st.info("The report will also be sent to your email address.")
@@ -184,17 +189,10 @@ If the report is not available, please contact the administrator and provide you
         if os.path.exists(report_path):
             with open(report_path, "rb") as file:
                 report_bytes = file.read()
-                
+
                 # Display the download button
                 st.download_button(
-                    label="Download",
-                    data=report_bytes,
-                    file_name="llm_evaluation_report.pdf",
-                    mime="application/pdf"
+                    label="Download", data=report_bytes, file_name="llm_evaluation_report.pdf", mime="application/pdf"
                 )
         else:
             st.error("File not found.")
-
-
-
-            

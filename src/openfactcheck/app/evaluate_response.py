@@ -29,62 +29,127 @@ def evaluate_response(ofc: OpenFactCheck):
     response_evaluator = ofc.ResponseEvaluator
 
     # Initialize the solvers
-    st.session_state.claimprocessors = ofc.list_claimprocessors()
-    st.session_state.retrievers = ofc.list_retrievers()
-    st.session_state.verifiers = ofc.list_verifiers()
-    st.session_state.claimprocessor = "factool_claimprocessor"
-    st.session_state.retriever = "factool_retriever"
-    st.session_state.verifier = "factcheckgpt_verifier"
+    st.session_state.claimprocessors = {
+        "Factool ClaimProcessor": "factool_claimprocessor",
+        "FactCheckGPT ClaimProcessor": "factcheckgpt_claimprocessor",
+        "UrduFactCheck ClaimProcessor": "urdufactcheck_claimprocessor",
+    }
+    st.session_state.retrievers = {
+        "Factool Retriever": "factool_retriever",
+        "FactCheckGPT Retriever": "factcheckgpt_retriever",
+        "UrduFactCheck Retriever": "urdufactcheck_retriever",
+        "UrduFactCheck Translator Retriever": "urdufactcheck_translator_retriever",
+        "UrduFactCheck Thresholded Translator Retriever": "urdufactcheck_thresholded_translator_retriever",
+    }
+    st.session_state.verifiers = {
+        "FactCheckGPT Verifier": "factcheckgpt_verifier",
+        "Factool Verifier": "factool_verifier",
+        "UrduFactCheck Verifier": "urdufactcheck_verifier",
+    }
+    st.session_state.claimprocessor = "Factool ClaimProcessor"
+    st.session_state.retriever = "Factool Retriever"
+    st.session_state.verifier = "FactCheckGPT Verifier"
 
-    st.write("This is where you can check factuality of a LLM response.")
-
-    # Customize FactChecker
-    st.write("Customize FactChecker")
+    st.info(
+        "Customize an automatic fact-checker and verify the factuality free-form text. You can select a *claimprocessor*, *retriever*, and *verifier* from the dropdowns below."
+    )
 
     # Dropdown in three columns
     col1, col2, col3 = st.columns(3)
     with col1:
         if "claimprocessor" not in st.session_state:
-            st.session_state.claimprocessor = st.selectbox(
-                "Select Claim Processor", list(st.session_state.claimprocessors)
-            )
-        else:
-            st.session_state.claimprocessor = st.selectbox(
+            claimprocessor_choice = st.selectbox(
                 "Select Claim Processor",
-                list(st.session_state.claimprocessors),
-                index=list(st.session_state.claimprocessors).index(st.session_state.claimprocessor),
+                list(st.session_state.claimprocessors.keys()),
+                help="Select a claim processor to use for processing claims.",
             )
+            st.session_state.claimprocessor = st.session_state.claimprocessors[claimprocessor_choice]
+        else:
+            claimprocessor_choice = st.selectbox(
+                "Select Claim Processor",
+                list(st.session_state.claimprocessors.keys()),
+                index=list(st.session_state.claimprocessors).index(st.session_state.claimprocessor),
+                help="Select a claim processor to use for processing claims.",
+            )
+            st.session_state.claimprocessor = st.session_state.claimprocessors[claimprocessor_choice]
     with col2:
         if "retriever" not in st.session_state:
-            st.session_state.retriever = st.selectbox("Select Retriever", list(st.session_state.retrievers))
-        else:
-            st.session_state.retriever = st.selectbox(
+            retriever_choice = st.selectbox(
                 "Select Retriever",
-                list(st.session_state.retrievers),
-                index=list(st.session_state.retrievers).index(st.session_state.retriever),
+                list(st.session_state.retrievers.keys()),
+                help="Select a retriever to use for retrieving evidences.",
             )
+            st.session_state.retriever = st.session_state.retrievers[retriever_choice]
+        else:
+            retriever_choice = st.selectbox(
+                "Select Retriever",
+                list(st.session_state.retrievers.keys()),
+                index=list(st.session_state.retrievers.keys()).index(st.session_state.retriever),
+                help="Select a retriever to use for retrieving evidences.",
+            )
+            st.session_state.retriever = st.session_state.retrievers[retriever_choice]
     with col3:
         if "verifier" not in st.session_state:
-            st.session_state.verifier = st.selectbox("Select Verifier", list(st.session_state.verifiers))
-        else:
-            st.session_state.verifier = st.selectbox(
+            verifier_choice = st.selectbox(
                 "Select Verifier",
-                list(st.session_state.verifiers),
-                index=list(st.session_state.verifiers).index(st.session_state.verifier),
+                list(st.session_state.verifiers.keys()),
+                help="Select a verifier to use for verifying claims.",
             )
+            st.session_state.verifier = st.session_state.verifiers[verifier_choice]
+        else:
+            verifier_choice = st.selectbox(
+                "Select Verifier",
+                list(st.session_state.verifiers.keys()),
+                index=list(st.session_state.verifiers.keys()).index(st.session_state.verifier),
+                help="Select a verifier to use for verifying claims.",
+            )
+            st.session_state.verifier = st.session_state.verifiers[verifier_choice]
 
-    # Input
+    # Your sample responses
+    sample_responses = [
+        "Elon Musk bought Twitter in 2020 and renamed it to X.",
+        "Burj Khalifa is the tallest building in the world and is located in Abu Dhabi. I took a photo in front of it.",
+        "برج خلیفہ دنیا کی بلند ترین عمارت ہے اور ابوظہبی میں واقع ہے۔ میں نے اس کے سامنے تصویر کھینچی۔",
+    ]
+
+    # Initialize the state for 'input_text' if not already there
     if "input_text" not in st.session_state:
-        st.session_state.input_text = {
-            "text": st.text_area("Enter LLM response here", "This is a sample LLM response.")
-        }
-    else:
-        st.session_state.input_text = {
-            "text": st.text_area("Enter LLM response here", st.session_state.input_text["text"])
-        }
+        st.session_state.input_text = ""
 
-    # Button to check factuality
-    if st.button("Check Factuality"):
+    # 3. Define a callback to cycle through responses
+    def load_sample():
+        current = st.session_state.input_text
+        try:
+            idx = sample_responses.index(current)
+            next_idx = (idx + 1) % len(sample_responses)
+        except ValueError:
+            next_idx = 0
+        st.session_state.input_text = sample_responses[next_idx]
+
+    # 4. Render the textarea, binding it to st.session_state["input_text"]
+    st.text_area(
+        "Enter LLM response here",
+        key="input_text",
+        height=150,
+        placeholder="Type or paste your free-form text here...",
+    )
+
+    # 5. Render the button with on_click=load_sample
+    col1, col2 = st.columns([1, 3])
+    with col2:
+        st.button(
+            "Load Sample Response",
+            on_click=load_sample,
+            use_container_width=True,
+            type="secondary",
+        )
+
+    with col1:
+        # Button to check factuality
+        check = st.button("Check Factuality", use_container_width=True, type="primary")
+
+    # Check if the button is clicked
+    if check:
         with st.status("Checking factuality...", expanded=True) as status:
             # Configure the pipeline
             st.write("Configuring pipeline...")
