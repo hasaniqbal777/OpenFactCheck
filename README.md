@@ -9,7 +9,11 @@ pinned: false
 -->
 
 <p align="center">
-  <img alt="OpenFactCheck Logo" src="https://raw.githubusercontent.com/hasaniqbal777/OpenFactCheck/main/assets/splash.png" height="120" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/hasaniqbal777/OpenFactCheck/blob/main/assets/splash_dark.png" width="70%">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/hasaniqbal777/OpenFactCheck/blob/main/assets/splash_light.png" width="70%">
+    <img alt="OpenFactCheck Logo" src="https://github.com/hasaniqbal777/OpenFactCheck/blob/main/assets/splash_dark.png" width="70%">
+  </picture>
   <p align="center">An Open-source Factuality Evaluation Demo for LLMs
     <br>
   </p>
