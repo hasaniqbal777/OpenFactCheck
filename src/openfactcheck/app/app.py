@@ -62,7 +62,7 @@ class App:
         st.markdown(
             """
             <div style='text-align: center;'>
-                <img src='https://raw.githubusercontent.com/hasaniqbal777/OpenFactCheck/main/assets/splash.png' width='400'/>
+                <img src='https://raw.githubusercontent.com/hasaniqbal777/OpenFactCheck/main/assets/splash_dark.svg' width='400'/>
             </div>
             """,
             unsafe_allow_html=True,
